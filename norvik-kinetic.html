@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Norvik Supply Co. — Authorized Supply</title>
+<meta name="description" content="One account for 600 authorized brands. Trade pricing, net terms, same-day fulfillment from six warehouses." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<style>
+  :root {
+    --ink: #0b0d10; --ink2: #14171c; --bone: #f2efe9; --mut: #8c8a84;
+    --accent: #ff5b1a; --line: rgba(242,239,233,0.12);
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: "Archivo", system-ui, sans-serif; background: var(--ink); color: var(--bone); line-height: 1.5; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  a { color: inherit; text-decoration: none; }
+  img { display: block; max-width: 100%; }
+  .anton { font-family: "Anton", "Archivo", sans-serif; font-weight: 400; text-transform: uppercase; letter-spacing: 0.005em; line-height: 0.86; }
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 0 28px; }
+  .accent { color: var(--accent); }
+
+  /* Nav */
+  header.nav { position: fixed; top: 0; left: 0; right: 0; z-index: 50; mix-blend-mode: difference; }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 70px; }
+  .brand { font-family: "Anton", sans-serif; text-transform: uppercase; font-size: 22px; letter-spacing: 0.04em; color: #fff; }
+  .nav-links { display: flex; gap: 26px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; color: #fff; }
+  .nav-links a { opacity: 0.8; } .nav-links a:hover { opacity: 1; }
+  @media (max-width: 820px) { .nav-links { display: none; } }
+
+  /* Hero */
+  .hero { min-height: 100dvh; display: flex; flex-direction: column; justify-content: center; position: relative; padding: 90px 0 40px; }
+  .hero .kicker { font-size: 13px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--mut); margin-bottom: 22px; display: flex; align-items: center; gap: 12px; }
+  .hero .kicker::before { content: ""; width: 36px; height: 1px; background: var(--accent); }
+  .hero h1 { font-size: clamp(3.4rem, 15vw, 13.5rem); }
+  .mask { overflow: hidden; display: block; }
+  .mask > span { display: block; will-change: transform; }
+  .hero .sub { margin-top: 28px; max-width: 44ch; font-size: clamp(1rem, 1.6vw, 1.2rem); color: var(--mut); }
+  .hero .cta { margin-top: 30px; display: flex; gap: 14px; flex-wrap: wrap; }
+  .btn { display: inline-flex; align-items: center; gap: 9px; font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; padding: 15px 26px; border-radius: 2px; border: 1px solid transparent; cursor: pointer; transition: transform .15s var(--ease), background .15s var(--ease), color .15s var(--ease), border-color .15s var(--ease); }
+  .btn:active { transform: translateY(1px); }
+  .btn-accent { background: var(--accent); color: #0b0d10; } .btn-accent:hover { background: #ff7338; }
+  .btn-line { border-color: var(--line); color: var(--bone); } .btn-line:hover { border-color: var(--bone); }
+  .hero-figure { position: absolute; inset: 0; z-index: -1; opacity: 0.16; overflow: hidden; }
+  .hero-figure img { width: 100%; height: 120%; object-fit: cover; filter: grayscale(1) contrast(1.1); }
+
+  /* Marquee */
+  .marquee { border-block: 1px solid var(--line); padding: 26px 0; overflow: hidden; white-space: nowrap; }
+  .marquee-track { display: inline-flex; align-items: center; gap: 64px; animation: scrollX 26s linear infinite; }
+  .marquee:hover .marquee-track { animation-play-state: paused; }
+  .marquee-track img { height: 30px; opacity: 0.7; }
+  @keyframes scrollX { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  /* Manifesto (pinned, scrubbed reveal) */
+  .manifesto { padding: 22vh 0; }
+  .manifesto .line2 { font-size: clamp(2.4rem, 9vw, 8rem); }
+  .manifesto .line2 .w { display: inline-block; opacity: 0.16; }
+  .manifesto .foot { margin-top: 40px; max-width: 50ch; color: var(--mut); font-size: 18px; }
+
+  /* Horizontal pan */
+  .pan-wrap { position: relative; overflow: hidden; }
+  .pan-track { display: flex; height: 100dvh; }
+  .panel { flex: 0 0 86vw; height: 100%; display: flex; flex-direction: column; justify-content: center; padding: 0 6vw; border-right: 1px solid var(--line); }
+  .panel .pn { font-family: "Anton", sans-serif; font-size: 20px; color: var(--accent); letter-spacing: 0.04em; }
+  .panel h3 { font-size: clamp(2.2rem, 6vw, 5rem); margin-top: 14px; }
+  .panel p { margin-top: 18px; max-width: 38ch; color: var(--mut); font-size: clamp(1rem, 1.5vw, 1.25rem); }
+  @media (max-width: 820px) {
+    .pan-track { display: block; height: auto; }
+    .panel { flex: none; height: auto; min-height: 70vh; width: 100%; border-right: none; border-bottom: 1px solid var(--line); padding: 80px 28px; }
+  }
+
+  /* Stats */
+  .stats { padding: 16vh 0; border-top: 1px solid var(--line); }
+  .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; }
+  .stat .num { font-family: "Anton", sans-serif; font-size: clamp(3rem, 8vw, 7rem); line-height: 0.9; }
+  .stat .num .accent { color: var(--accent); }
+  .stat .lbl { margin-top: 12px; font-size: 14px; color: var(--mut); max-width: 22ch; }
+  @media (max-width: 820px) { .stat-grid { grid-template-columns: 1fr 1fr; gap: 40px 24px; } }
+
+  /* Parallax band */
+  .band { position: relative; height: 80vh; overflow: hidden; display: grid; place-items: center; border-block: 1px solid var(--line); }
+  .band .bg { position: absolute; inset: -15% 0; z-index: 0; }
+  .band .bg img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(0.4) brightness(0.45); }
+  .band .big { position: relative; z-index: 1; font-size: clamp(2.6rem, 11vw, 10rem); text-align: center; }
+
+  /* Sticky stack */
+  .stack { padding: 12vh 0; }
+  .stack-card { position: sticky; top: 12vh; height: 64vh; border-radius: 6px; overflow: hidden; border: 1px solid var(--line); margin-bottom: 5vh; display: flex; align-items: flex-end; }
+  .stack-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: grayscale(0.3) brightness(0.6); z-index: 0; }
+  .stack-card .ov { position: relative; z-index: 1; padding: 40px; }
+  .stack-card .ci { font-family: "Anton", sans-serif; color: var(--accent); font-size: 18px; }
+  .stack-card h3 { font-family: "Anton", sans-serif; font-size: clamp(2rem, 6vw, 4.4rem); margin-top: 8px; }
+  .stack-card p { margin-top: 10px; max-width: 40ch; color: rgba(242,239,233,0.82); }
+
+  /* CTA */
+  .cta-final { padding: 20vh 0; text-align: center; }
+  .cta-final h2 { font-size: clamp(2.8rem, 12vw, 11rem); }
+  .cta-final .row { margin-top: 36px; display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+
+  /* Footer */
+  footer { border-top: 1px solid var(--line); padding: 40px 0; }
+  .foot-inner { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; color: var(--mut); font-size: 13px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .marquee-track { animation: none; }
+    .mask > span { transform: none !important; }
+    .manifesto .line2 .w { opacity: 1 !important; }
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="#top">Norvik</a>
+    <nav class="nav-links">
+      <a href="#capabilities">Capabilities</a>
+      <a href="#stats">Results</a>
+      <a href="norvik-catalog-uipro.html">Catalog</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-figure"><img id="heroBg" src="https://picsum.photos/seed/norvik-kinetic-warehouse/1600/1100" alt="" /></div>
+    <div class="wrap">
+      <p class="kicker reveal-fade">ISO 9001 · Authorized distribution · Since 1987</p>
+      <h1 class="anton">
+        <span class="mask"><span class="hw">Authorized</span></span>
+        <span class="mask"><span class="hw accent">supply.</span></span>
+      </h1>
+      <p class="sub reveal-fade">One account for 600 manufacturers. Trade pricing, net terms, and same-day fulfillment from six warehouses.</p>
+      <div class="cta reveal-fade">
+        <a class="btn btn-accent" href="#cta">Open a trade account</a>
+        <a class="btn btn-line" href="norvik-catalog-uipro.html">Browse catalog</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee" aria-label="Brands we distribute">
+    <div class="marquee-track">
+      <img src="https://cdn.simpleicons.org/3m/f2efe9" alt="3M" />
+      <img src="https://cdn.simpleicons.org/bosch/f2efe9" alt="Bosch" />
+      <img src="https://cdn.simpleicons.org/honeywell/f2efe9" alt="Honeywell" />
+      <img src="https://cdn.simpleicons.org/dewalt/f2efe9" alt="DeWalt" />
+      <img src="https://cdn.simpleicons.org/caterpillar/f2efe9" alt="Caterpillar" />
+      <img src="https://cdn.simpleicons.org/siemens/f2efe9" alt="Siemens" />
+      <!-- duplicate for seamless loop -->
+      <img src="https://cdn.simpleicons.org/3m/f2efe9" alt="" aria-hidden="true" />
+      <img src="https://cdn.simpleicons.org/bosch/f2efe9" alt="" aria-hidden="true" />
+      <img src="https://cdn.simpleicons.org/honeywell/f2efe9" alt="" aria-hidden="true" />
+      <img src="https://cdn.simpleicons.org/dewalt/f2efe9" alt="" aria-hidden="true" />
+      <img src="https://cdn.simpleicons.org/caterpillar/f2efe9" alt="" aria-hidden="true" />
+      <img src="https://cdn.simpleicons.org/siemens/f2efe9" alt="" aria-hidden="true" />
+    </div>
+  </div>
+
+  <!-- MANIFESTO (pinned scrub) -->
+  <section class="manifesto" id="manifesto">
+    <div class="wrap">
+      <h2 class="anton line2" id="manifestoLine">
+        <span class="w">One</span> <span class="w">account.</span> <span class="w">One</span> <span class="w">invoice.</span> <span class="w accent">Zero</span> <span class="w">vendor</span> <span class="w">scavenger</span> <span class="w">hunts.</span>
+      </h2>
+      <p class="foot">Norvik consolidates the brands you already specify into a single authorized account, so quarter close stops being a chase.</p>
+    </div>
+  </section>
+
+  <!-- HORIZONTAL PAN -->
+  <section class="pan-wrap" id="capabilities">
+    <div class="pan-track" id="panTrack">
+      <article class="panel">
+        <span class="pn">01</span>
+        <h3 class="anton">Net terms,<br>one invoice.</h3>
+        <p>Approved accounts buy on net 30 or 60 and reconcile against a single monthly statement.</p>
+      </article>
+      <article class="panel">
+        <span class="pn">02</span>
+        <h3 class="anton">Punchout<br>to your ERP.</h3>
+        <p>Catalogs and electronic POs work with Coupa, SAP Ariba, Jaggaer, and Oracle.</p>
+      </article>
+      <article class="panel">
+        <span class="pn">03</span>
+        <h3 class="anton">Same-day<br>fulfillment.</h3>
+        <p>Six regional warehouses keep stocked items moving the day you order.</p>
+      </article>
+      <article class="panel">
+        <span class="pn">04</span>
+        <h3 class="anton">A real<br>account team.</h3>
+        <p>A named rep who knows your sites, your standing orders, and the brands you specify.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- STATS (count up) -->
+  <section class="stats" id="stats">
+    <div class="wrap stat-grid">
+      <div class="stat"><div class="num"><span class="count" data-to="600">0</span></div><div class="lbl">authorized manufacturers in one account</div></div>
+      <div class="stat"><div class="num accent"><span class="count" data-to="99.4" data-dec="1">0</span><span class="accent">%</span></div><div class="lbl">line-fill rate, trailing 12 months</div></div>
+      <div class="stat"><div class="num"><span class="count" data-to="85">0</span>k</div><div class="lbl">SKUs stocked across six warehouses</div></div>
+      <div class="stat"><div class="num">16:00</div><div class="lbl">same-day ship cutoff on stocked lines</div></div>
+    </div>
+  </section>
+
+  <!-- PARALLAX BAND -->
+  <section class="band">
+    <div class="bg" id="bandBg"><img src="https://picsum.photos/seed/norvik-pallets-racking/1600/1000" alt="Warehouse racking" /></div>
+    <div class="anton big">Stocked.<br><span class="accent">Shipped.</span></div>
+  </section>
+
+  <!-- STICKY STACK -->
+  <section class="stack">
+    <div class="wrap">
+      <div class="stack-card">
+        <img src="https://picsum.photos/seed/norvik-stack-safety/1200/800" alt="Safety and PPE" />
+        <div class="ov"><div class="ci">Category 01</div><h3 class="anton">Safety &amp; PPE</h3><p>Respirators, eyewear, gloves, hi-vis, and steel-toe from the brands your EHS team already approves.</p></div>
+      </div>
+      <div class="stack-card">
+        <img src="https://picsum.photos/seed/norvik-stack-power/1200/800" alt="Power tools" />
+        <div class="ov"><div class="ci">Category 02</div><h3 class="anton">Power tools</h3><p>Drills, saws, fasteners, and bits, kitted or bare, with manufacturer warranties handled by your rep.</p></div>
+      </div>
+      <div class="stack-card">
+        <img src="https://picsum.photos/seed/norvik-stack-facility/1200/800" alt="Facility supply" />
+        <div class="ov"><div class="ci">Category 03</div><h3 class="anton">Facility supply</h3><p>Packaging, janitorial, electrical, and material handling on standing orders and scheduled replenishment.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-final" id="cta">
+    <div class="wrap">
+      <h2 class="anton">Open an<br><span class="accent">account.</span></h2>
+      <div class="row">
+        <a class="btn btn-accent" href="#">Get a quote</a>
+        <a class="btn btn-line" href="norvik-catalog-uipro.html">Browse catalog</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap foot-inner">
+    <span class="brand" style="font-size:16px;">Norvik</span>
+    <span>© 2026 Norvik Supply Co. · ISO 9001:2015 · Net terms subject to credit approval</span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (reduce) {
+    // Static, fully visible
+    document.querySelectorAll(".hw").forEach(s => s.style.transform = "none");
+    document.querySelectorAll(".count").forEach(c => c.textContent = c.dataset.to);
+    return;
+  }
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  // --- Hero load: masked word rise + fade-ins ---
+  gsap.set(".hw", { yPercent: 115 });
+  const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
+  tl.to(".hw", { yPercent: 0, duration: 1.05, stagger: 0.12 })
+    .from(".reveal-fade", { y: 22, opacity: 0, duration: 0.8, stagger: 0.12 }, "-=0.6");
+
+  // --- Hero background subtle parallax ---
+  gsap.to("#heroBg", { yPercent: 12, ease: "none", scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true } });
+
+  // --- Manifesto: pin + scrub words from dim to bright ---
+  gsap.to("#manifestoLine .w", {
+    opacity: 1, ease: "none", stagger: 0.5,
+    scrollTrigger: { trigger: "#manifesto", start: "top 70%", end: "bottom 70%", scrub: true }
+  });
+
+  // --- Stats: count up on enter ---
+  document.querySelectorAll(".count").forEach((el) => {
+    const to = parseFloat(el.dataset.to);
+    const dec = el.dataset.dec ? parseInt(el.dataset.dec) : 0;
+    const obj = { v: 0 };
+    ScrollTrigger.create({
+      trigger: el, start: "top 85%", once: true,
+      onEnter: () => gsap.to(obj, { v: to, duration: 1.6, ease: "power2.out",
+        onUpdate: () => { el.textContent = dec ? obj.v.toFixed(dec) : Math.round(obj.v); } })
+    });
+  });
+
+  // --- Parallax band image ---
+  gsap.to("#bandBg", { yPercent: 16, ease: "none", scrollTrigger: { trigger: ".band", start: "top bottom", end: "bottom top", scrub: true } });
+
+  // --- Desktop-only: horizontal pan (pin + scrub x) ---
+  ScrollTrigger.matchMedia({
+    "(min-width: 821px)": function () {
+      const track = document.getElementById("panTrack");
+      const distance = () => track.scrollWidth - window.innerWidth;
+      gsap.to(track, {
+        x: () => -distance(), ease: "none",
+        scrollTrigger: {
+          trigger: ".pan-wrap", start: "top top",
+          end: () => "+=" + distance(),
+          pin: true, scrub: 1, invalidateOnRefresh: true
+        }
+      });
+    }
+  });
+})();
+</script>
+</body>
+</html>

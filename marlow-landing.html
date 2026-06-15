@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Marlow — Engineering delivery intelligence</title>
+<meta name="description" content="Marlow joins your deploys, incidents, and pull requests into one view, so engineering leaders can prove whether delivery is improving." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<!-- Demo: fonts via Google Fonts CDN. In production, self-host Geist with @font-face + font-display:swap. -->
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  /* ---- Tokens (one accent, one radius scale, one theme) ---- */
+  :root {
+    --bg: #f7f8fa;
+    --bg-tint: #eef1f6;
+    --surface: #ffffff;
+    --ink: #14161c;
+    --ink-soft: #565b66;
+    --ink-faint: #888d98;
+    --line: #e2e6ee;
+    --accent: #2945ff;        /* cobalt, the only accent on the page */
+    --accent-ink: #1d33cc;
+    --navy: #0d1020;          /* footer only */
+    --r-sm: 8px;
+    --r-md: 16px;
+    --r-pill: 999px;
+    --maxw: 1180px;
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: "Geist", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  .mono { font-family: "Geist Mono", ui-monospace, monospace; }
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
+  a { color: inherit; text-decoration: none; }
+  img { display: block; max-width: 100%; }
+
+  /* ---- Buttons (single radius, contrast-checked) ---- */
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 15px; font-weight: 500; white-space: nowrap;
+    border-radius: var(--r-pill); padding: 11px 20px;
+    transition: transform .18s var(--ease), background .18s var(--ease), border-color .18s var(--ease);
+    cursor: pointer; border: 1px solid transparent;
+  }
+  .btn:active { transform: translateY(1px) scale(0.99); }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: var(--accent-ink); }
+  .btn-ghost { background: transparent; color: var(--ink); border-color: var(--line); }
+  .btn-ghost:hover { border-color: var(--ink); }
+  .btn-lg { padding: 14px 26px; font-size: 16px; }
+
+  /* ---- Nav (single line, <= 72px) ---- */
+  header.nav {
+    position: sticky; top: 0; z-index: 50;
+    background: color-mix(in srgb, var(--bg) 82%, transparent);
+    backdrop-filter: saturate(160%) blur(12px);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 68px; }
+  .brand { display: flex; align-items: center; gap: 9px; font-weight: 600; font-size: 18px; letter-spacing: -0.01em; }
+  .brand .mark { width: 22px; height: 22px; border-radius: 6px; background: var(--accent); display: grid; place-items: center; }
+  .brand .mark svg { width: 13px; height: 13px; }
+  .nav-links { display: flex; align-items: center; gap: 28px; font-size: 15px; color: var(--ink-soft); }
+  .nav-links a:hover { color: var(--ink); }
+  .nav-cta { display: flex; align-items: center; gap: 12px; }
+  @media (max-width: 860px) { .nav-links { display: none; } }
+
+  /* ---- Hero (asymmetric split, fits viewport) ---- */
+  .hero { padding: 76px 0 64px; }
+  .hero-grid { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 56px; align-items: center; }
+  .eyebrow {
+    font-family: "Geist Mono", monospace; font-size: 12px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--accent-ink); margin-bottom: 18px;
+  }
+  h1 {
+    font-size: clamp(2.4rem, 5vw, 3.7rem); line-height: 1.04;
+    letter-spacing: -0.035em; font-weight: 600; max-width: 14ch;
+  }
+  .hero p.sub { margin-top: 20px; font-size: 18px; color: var(--ink-soft); max-width: 46ch; }
+  .hero-cta { margin-top: 30px; display: flex; gap: 12px; flex-wrap: wrap; }
+  .hero-art {
+    position: relative; border-radius: var(--r-md); overflow: hidden;
+    border: 1px solid var(--line); box-shadow: 0 24px 60px -28px rgba(20, 22, 28, 0.45);
+    aspect-ratio: 5 / 4; background: var(--bg-tint);
+  }
+  .hero-art img { width: 100%; height: 100%; object-fit: cover; }
+  .hero-art .badge {
+    position: absolute; left: 14px; bottom: 14px;
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-pill);
+    padding: 7px 13px; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 8px;
+  }
+  .hero-art .badge .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+  @media (max-width: 860px) {
+    .hero-grid { grid-template-columns: 1fr; gap: 36px; }
+    h1 { max-width: 100%; }
+    .hero p.sub { max-width: 100%; }
+  }
+
+  /* ---- Logo wall (under hero, real logos, no labels) ---- */
+  .logos { padding: 18px 0 56px; }
+  .logos .label { text-align: center; font-size: 13px; color: var(--ink-faint); letter-spacing: 0.04em; }
+  .logo-row { margin-top: 22px; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 44px; }
+  .logo-row img { height: 24px; opacity: 0.62; transition: opacity .2s var(--ease); filter: grayscale(1); }
+  .logo-row img:hover { opacity: 1; filter: none; }
+
+  /* ---- Section scaffolding ---- */
+  section { padding: 84px 0; }
+  .section-head { max-width: 60ch; }
+  .section-head h2 { font-size: clamp(1.9rem, 3.4vw, 2.7rem); letter-spacing: -0.03em; font-weight: 600; line-height: 1.08; }
+  .section-head p { margin-top: 14px; font-size: 17px; color: var(--ink-soft); max-width: 52ch; }
+
+  /* ---- Bento features (varied cells) ---- */
+  .bento { margin-top: 44px; display: grid; grid-template-columns: repeat(3, 1fr); grid-auto-rows: 1fr; gap: 16px; }
+  .cell {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-md);
+    padding: 26px; display: flex; flex-direction: column; transition: transform .25s var(--ease), box-shadow .25s var(--ease);
+  }
+  .cell:hover { transform: translateY(-3px); box-shadow: 0 18px 40px -24px rgba(20,22,28,0.4); }
+  .cell h3 { font-size: 19px; font-weight: 600; letter-spacing: -0.015em; }
+  .cell p { margin-top: 8px; font-size: 15px; color: var(--ink-soft); }
+  .cell .ico { width: 38px; height: 38px; border-radius: 10px; background: var(--bg-tint); display: grid; place-items: center; margin-bottom: 16px; color: var(--accent-ink); }
+  .cell .ico svg { width: 20px; height: 20px; }
+  .cell-wide { grid-column: span 2; }
+  .cell-feature {
+    grid-column: span 2; grid-row: span 2; padding: 0; overflow: hidden;
+    background: linear-gradient(150deg, #1a2bd6, var(--accent)); color: #fff; border: none;
+  }
+  .cell-feature .pad { padding: 30px; }
+  .cell-feature h3 { color: #fff; font-size: 23px; }
+  .cell-feature p { color: rgba(255,255,255,0.82); max-width: 34ch; }
+  .cell-feature .shot { margin-top: 22px; border-radius: var(--r-sm); overflow: hidden; border: 1px solid rgba(255,255,255,0.18); aspect-ratio: 16/9; }
+  .cell-feature .shot img { width: 100%; height: 100%; object-fit: cover; }
+  @media (max-width: 860px) {
+    .bento { grid-template-columns: 1fr; }
+    .cell-wide, .cell-feature { grid-column: span 1; grid-row: auto; }
+  }
+
+  /* ---- Stat band (plain layout, no cards) ---- */
+  .stats { background: var(--bg-tint); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .stats .wrap { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
+  .stat .n { font-size: clamp(2.6rem, 5vw, 3.6rem); font-weight: 600; letter-spacing: -0.04em; line-height: 1; }
+  .stat .n span { color: var(--accent-ink); }
+  .stat .t { margin-top: 12px; font-size: 15px; color: var(--ink-soft); max-width: 26ch; }
+  @media (max-width: 720px) { .stats .wrap { grid-template-columns: 1fr; gap: 36px; } }
+
+  /* ---- Deep-dive split (single zigzag) ---- */
+  .dive .wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
+  .dive-art { border-radius: var(--r-md); overflow: hidden; border: 1px solid var(--line); aspect-ratio: 4/3; }
+  .dive-art img { width: 100%; height: 100%; object-fit: cover; }
+  .dive ul { margin-top: 22px; display: grid; gap: 14px; }
+  .dive li { display: flex; gap: 12px; font-size: 16px; color: var(--ink-soft); }
+  .dive li svg { flex: none; width: 20px; height: 20px; color: var(--accent); margin-top: 2px; }
+  @media (max-width: 860px) { .dive .wrap { grid-template-columns: 1fr; gap: 32px; } }
+
+  /* ---- Quote ---- */
+  .quote { text-align: center; }
+  .quote blockquote { font-size: clamp(1.5rem, 3.2vw, 2.2rem); letter-spacing: -0.02em; line-height: 1.28; font-weight: 500; max-width: 22ch; margin: 0 auto; }
+  .quote .who { margin-top: 26px; font-size: 15px; color: var(--ink-soft); }
+  .quote .who strong { color: var(--ink); font-weight: 600; }
+
+  /* ---- Final CTA ---- */
+  .cta-final { text-align: center; }
+  .cta-final h2 { font-size: clamp(2rem, 4vw, 3rem); letter-spacing: -0.03em; font-weight: 600; max-width: 18ch; margin: 0 auto; }
+  .cta-final p { margin-top: 14px; color: var(--ink-soft); font-size: 17px; }
+  .cta-final .row { margin-top: 28px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+  /* ---- Footer (dark, conventional) ---- */
+  footer { background: var(--navy); color: #c4c8d4; }
+  footer .wrap { padding-top: 60px; padding-bottom: 40px; }
+  .foot-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 40px; }
+  footer .brand { color: #fff; }
+  footer .brand .mark { background: var(--accent); }
+  footer p.tag { margin-top: 14px; font-size: 14px; color: #8a90a3; max-width: 30ch; }
+  .foot-col h4 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; color: #6f7589; margin-bottom: 14px; }
+  .foot-col a { display: block; font-size: 14px; color: #c4c8d4; padding: 5px 0; }
+  .foot-col a:hover { color: #fff; }
+  .foot-base { margin-top: 44px; padding-top: 22px; border-top: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; font-size: 13px; color: #6f7589; flex-wrap: wrap; gap: 10px; }
+  @media (max-width: 760px) { .foot-grid { grid-template-columns: 1fr 1fr; gap: 30px; } }
+
+  /* ---- Scroll reveal ---- */
+  .reveal { opacity: 0; transform: translateY(22px); transition: opacity .7s var(--ease), transform .7s var(--ease); }
+  .reveal.in { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .reveal { opacity: 1; transform: none; transition: none; }
+    .btn, .cell, .logo-row img { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="#top">
+      <span class="mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18 L9 9 L14 14 L20 5"/></svg>
+      </span>
+      Marlow
+    </a>
+    <nav class="nav-links">
+      <a href="#features">Product</a>
+      <a href="#metrics">Metrics</a>
+      <a href="#dive">How it works</a>
+      <a href="#pricing">Pricing</a>
+    </nav>
+    <div class="nav-cta">
+      <a class="btn btn-ghost" href="#" style="padding:9px 16px;">Sign in</a>
+      <a class="btn btn-primary" href="#pricing" style="padding:9px 18px;">Start free</a>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ============ HERO ============ -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <p class="eyebrow">Engineering delivery intelligence</p>
+        <h1>Your delivery data, finally in one place.</h1>
+        <p class="sub">Marlow joins your deploys, incidents, and pull requests into one view, so you can prove whether delivery is improving.</p>
+        <div class="hero-cta">
+          <a class="btn btn-primary btn-lg" href="#pricing">Start free</a>
+          <a class="btn btn-ghost btn-lg" href="#dive">Book a demo</a>
+        </div>
+      </div>
+      <div class="hero-art">
+        <!-- TODO: replace with a real product screenshot, 1200x960. Placeholder is editorial photography. -->
+        <img src="https://picsum.photos/seed/marlow-delivery-dashboard/1200/960" alt="Engineering team reviewing delivery data" />
+        <span class="badge"><span class="dot"></span> Lead time trending down this quarter</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ LOGO WALL ============ -->
+  <section class="logos" style="padding-top:0;">
+    <div class="wrap">
+      <p class="label">Used by platform teams at</p>
+      <div class="logo-row">
+        <img src="https://cdn.simpleicons.org/linear/14161c" alt="Linear" />
+        <img src="https://cdn.simpleicons.org/vercel/14161c" alt="Vercel" />
+        <img src="https://cdn.simpleicons.org/stripe/14161c" alt="Stripe" />
+        <img src="https://cdn.simpleicons.org/notion/14161c" alt="Notion" />
+        <img src="https://cdn.simpleicons.org/datadog/14161c" alt="Datadog" />
+        <img src="https://cdn.simpleicons.org/github/14161c" alt="GitHub" />
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FEATURES (bento) ============ -->
+  <section id="features">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <h2>One timeline for everything you ship.</h2>
+        <p>Stop stitching together CI logs, incident channels, and spreadsheets. Marlow reads it once and keeps it current.</p>
+      </div>
+
+      <div class="bento">
+        <!-- Feature cell with visual variation -->
+        <div class="cell cell-feature reveal">
+          <div class="pad">
+            <h3>Release timeline</h3>
+            <p>Every deploy, rollback, and incident on a single scrubbable line, linked back to the pull requests that caused them.</p>
+            <div class="shot">
+              <img src="https://picsum.photos/seed/marlow-timeline-ui/900/506" alt="Release timeline view" />
+            </div>
+          </div>
+        </div>
+
+        <div class="cell reveal">
+          <div class="ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg>
+          </div>
+          <h3>DORA, done right</h3>
+          <p>Lead time, deploy frequency, change-fail rate, and recovery time, computed from your real events.</p>
+        </div>
+
+        <div class="cell reveal">
+          <div class="ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4m0 12v4m10-10h-4M6 12H2m15.07-7.07-2.83 2.83M9.76 14.24l-2.83 2.83m0-12.14 2.83 2.83m4.48 4.48 2.83 2.83"/></svg>
+          </div>
+          <h3>Connects to your stack</h3>
+          <p>GitHub, GitLab, PagerDuty, and your CI talk to Marlow in minutes, not a quarter.</p>
+        </div>
+
+        <div class="cell cell-wide reveal">
+          <div class="ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          </div>
+          <h3>Alerts that respect on-call</h3>
+          <p>Marlow flags a regression in the metric, not every blip. Thresholds follow your team's working hours and rotation.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ STAT BAND ============ -->
+  <section id="metrics" class="stats">
+    <div class="wrap">
+      <!-- sample data, illustrative only -->
+      <div class="stat reveal">
+        <div class="n mono"><span>31%</span></div>
+        <div class="t">Median lead-time drop reported in the first two quarters.</div>
+      </div>
+      <div class="stat reveal">
+        <div class="n mono"><span>2.4x</span></div>
+        <div class="t">More failing deploys caught before they reach users.</div>
+      </div>
+      <div class="stat reveal">
+        <div class="n mono"><span>1</span></div>
+        <div class="t">Dashboard, instead of the six spreadsheets it replaced.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DEEP DIVE (single split) ============ -->
+  <section id="dive" class="dive">
+    <div class="wrap">
+      <div class="reveal">
+        <h2 style="font-size:clamp(1.9rem,3.4vw,2.6rem);letter-spacing:-0.03em;font-weight:600;line-height:1.1;">From raw events to a story leaders trust.</h2>
+        <p style="margin-top:14px;color:var(--ink-soft);font-size:17px;max-width:48ch;">Marlow normalizes messy webhook data into clean delivery metrics, so the number you bring to the board review is one you can defend.</p>
+        <ul>
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            <span>Audit every metric back to the commit and incident behind it.</span>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            <span>Compare teams without turning it into a leaderboard.</span>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            <span>Export a board-ready summary in two clicks.</span>
+          </li>
+        </ul>
+        <div style="margin-top:28px;">
+          <a class="btn btn-primary btn-lg" href="#pricing">Start free</a>
+        </div>
+      </div>
+      <div class="dive-art reveal">
+        <img src="https://picsum.photos/seed/marlow-report-detail/900/676" alt="Delivery report detail" />
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ QUOTE ============ -->
+  <section class="quote">
+    <div class="wrap">
+      <blockquote class="reveal">"We stopped arguing about whether we were getting faster. Now we just open Marlow and look."</blockquote>
+      <p class="who reveal"><strong>Priya Nair</strong>, VP Engineering at Halvorsen Logistics</p>
+    </div>
+  </section>
+
+  <!-- ============ FINAL CTA ============ -->
+  <section id="pricing" class="cta-final">
+    <div class="wrap">
+      <h2 class="reveal">Put your delivery data to work this week.</h2>
+      <p class="reveal">Free for one team, no card required. Connect a repo and see your first metrics in under ten minutes.</p>
+      <div class="row reveal">
+        <a class="btn btn-primary btn-lg" href="#">Start free</a>
+        <a class="btn btn-ghost btn-lg" href="#dive">Book a demo</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <a class="brand" href="#top">
+          <span class="mark">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18 L9 9 L14 14 L20 5"/></svg>
+          </span>
+          Marlow
+        </a>
+        <p class="tag">Delivery intelligence for engineering leaders who want fewer dashboards and clearer answers.</p>
+      </div>
+      <div class="foot-col">
+        <h4>Product</h4>
+        <a href="#features">Features</a>
+        <a href="#metrics">Metrics</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#">Changelog</a>
+      </div>
+      <div class="foot-col">
+        <h4>Company</h4>
+        <a href="#">About</a>
+        <a href="#">Customers</a>
+        <a href="#">Careers</a>
+        <a href="#">Contact</a>
+      </div>
+      <div class="foot-col">
+        <h4>Resources</h4>
+        <a href="#">Docs</a>
+        <a href="#">DORA guide</a>
+        <a href="#">Status</a>
+        <a href="#">Security</a>
+      </div>
+    </div>
+    <div class="foot-base">
+      <span>© 2026 Marlow, Inc.</span>
+      <span>Privacy · Terms</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Scroll reveal via IntersectionObserver (no scroll listeners), respects reduced motion.
+  (function () {
+    var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var els = document.querySelectorAll(".reveal");
+    if (reduce || !("IntersectionObserver" in window)) {
+      els.forEach(function (el) { el.classList.add("in"); });
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.16 });
+    els.forEach(function (el) { io.observe(el); });
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+# Tooling / installs — not part of the designs
+.claude/
+.agents/
+node_modules/
+package.json
+package-lock.json
+design-system/
+
+# OS
+.DS_Store

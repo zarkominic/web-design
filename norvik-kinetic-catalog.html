@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Norvik Supply Co. — Catalog</title>
+<meta name="description" content="Browse authorized stock: tools, safety, packaging, and facility supplies. Trade pricing, net terms, same-day shipping." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<style>
+  :root {
+    --bg: #07090f; --bg2: #0d111b; --bg3: #121723; --fg: #eef2fb; --accent: #3d7bff; --accentHover: #5b8fff; --ink:#07090f;
+    --line: rgba(238,242,251,0.12); --mut: rgba(238,242,251,0.56); --stock:#37d99a;
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: "Archivo", system-ui, sans-serif; background: var(--bg); color: var(--fg); line-height: 1.5; -webkit-font-smoothing: antialiased; }
+  body.lock { overflow: hidden; }
+  a { color: inherit; text-decoration: none; }
+  img { display: block; max-width: 100%; }
+  button { font-family: inherit; cursor: pointer; }
+  .anton { font-family: "Anton", sans-serif; font-weight: 400; text-transform: uppercase; letter-spacing: 0.01em; line-height: 0.9; }
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 0 28px; }
+  .accent { color: var(--accent); }
+
+  .cursor { position: fixed; top: 0; left: 0; width: 30px; height: 30px; border: 1.5px solid var(--accent); border-radius: 50%; transform: translate(-50%, -50%); pointer-events: none; z-index: 90; opacity: 0; transition: opacity .3s, width .25s var(--ease), height .25s var(--ease), background-color .25s; }
+  .cursor.on { opacity: 1; } .cursor.hot { width: 54px; height: 54px; background: color-mix(in srgb, var(--accent) 18%, transparent); }
+
+  /* Nav */
+  header.nav { position: sticky; top: 0; z-index: 40; background: color-mix(in srgb, var(--bg) 84%, transparent); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 68px; gap: 16px; }
+  .brand { font-family: "Anton", sans-serif; text-transform: uppercase; font-size: 22px; letter-spacing: 0.04em; }
+  .nav-links { display: flex; gap: 26px; font-size: 12.5px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--mut); }
+  .nav-links a:hover { color: var(--fg); }
+  .cart-btn { position: relative; display: inline-flex; align-items: center; gap: 9px; background: transparent; border: 1px solid var(--line); border-radius: 2px; padding: 9px 15px; font-size: 12.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--fg); }
+  .cart-btn:hover { border-color: var(--accent); }
+  .cart-btn svg { width: 17px; height: 17px; }
+  .cart-count { min-width: 20px; height: 20px; padding: 0 6px; border-radius: 2px; background: var(--accent); color: var(--ink); font-size: 12px; font-weight: 700; display: grid; place-items: center; }
+  .cart-count.hide { display: none; }
+  @media (max-width: 820px) { .nav-links { display: none; } }
+
+  /* Header */
+  .cat-head { padding: 64px 0 26px; }
+  .cat-head .back { font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mut); display: inline-flex; align-items: center; gap: 8px; }
+  .cat-head .back:hover { color: var(--accent); }
+  .cat-head h1 { font-size: clamp(3rem, 11vw, 8.5rem); margin-top: 18px; }
+  .cat-head p { margin-top: 14px; color: var(--mut); font-size: 17px; max-width: 56ch; }
+
+  /* Marquee */
+  .marquee { border-block: 1px solid var(--line); padding: 18px 0; overflow: hidden; white-space: nowrap; }
+  .marquee-track { display: inline-flex; align-items: center; gap: 56px; animation: scrollX 24s linear infinite; }
+  .marquee:hover .marquee-track { animation-play-state: paused; }
+  .marquee-track img { height: 24px; opacity: 0.55; }
+  @keyframes scrollX { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  /* Control bar */
+  .control { position: sticky; top: 68px; z-index: 30; background: color-mix(in srgb, var(--bg) 90%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+  .control-inner { display: flex; align-items: center; gap: 18px; padding: 14px 0; }
+  .search { position: relative; flex: 1; max-width: 380px; }
+  .search svg.mag { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--mut); pointer-events: none; }
+  .search input { width: 100%; font-size: 14px; color: var(--fg); background: var(--bg2); border: 1px solid var(--line); border-radius: 2px; padding: 11px 38px; }
+  .search input::placeholder { color: var(--mut); }
+  .search input:focus { outline: none; border-color: var(--accent); }
+  .search .clear { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); width: 24px; height: 24px; border: none; background: transparent; border-radius: 2px; display: none; place-items: center; color: var(--mut); }
+  .search .clear.show { display: grid; } .search .clear:hover { color: var(--fg); } .search .clear svg { width: 13px; height: 13px; }
+  .filter-row { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; flex: 1; justify-content: flex-end; }
+  .filter-row::-webkit-scrollbar { display: none; }
+  .pill { flex: none; font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase; border: 1px solid var(--line); background: transparent; color: var(--mut); border-radius: 2px; padding: 8px 13px; font-weight: 600; transition: all .14s var(--ease); }
+  .pill:hover { color: var(--fg); border-color: var(--mut); }
+  .pill.active { background: var(--accent); color: var(--ink); border-color: var(--accent); }
+  @media (max-width: 820px) { .control-inner { flex-direction: column; align-items: stretch; gap: 12px; } .search { max-width: none; } .filter-row { justify-content: flex-start; } }
+
+  /* Grid */
+  .grid-wrap { padding: 30px 0 100px; }
+  .count-line { font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--mut); margin-bottom: 22px; }
+  .count-line strong { color: var(--accent); }
+  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  @media (max-width: 1080px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 780px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 480px) { .grid { grid-template-columns: 1fr; } }
+
+  .card { position: relative; background: var(--bg2); border: 1px solid var(--line); border-radius: 4px; display: flex; flex-direction: column; cursor: pointer; transition: transform .2s var(--ease), border-color .2s var(--ease); will-change: transform; }
+  .card:hover { transform: translateY(-4px); border-color: var(--accent); }
+  .card .thumb { aspect-ratio: 4/3; overflow: hidden; position: relative; background: var(--bg3); border-radius: 4px 4px 0 0; }
+  .card .thumb img { width: 100%; height: 100%; object-fit: cover; filter: saturate(0.9) brightness(0.92); transition: transform .4s var(--ease); }
+  .card:hover .thumb img { transform: scale(1.06); }
+  .card .stock { position: absolute; top: 10px; left: 10px; background: color-mix(in srgb, var(--bg) 70%, transparent); border: 1px solid var(--line); border-radius: 2px; padding: 4px 9px; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 600; color: var(--stock); display: flex; align-items: center; gap: 6px; }
+  .card .stock .d { width: 6px; height: 6px; border-radius: 50%; background: var(--stock); }
+  .card .body { padding: 15px; display: flex; flex-direction: column; flex: 1; }
+  .card .brandt { font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mut); }
+  .card .brandt .sku { color: color-mix(in srgb, var(--fg) 38%, transparent); }
+  .card h3 { font-family: "Anton", sans-serif; font-size: 18px; line-height: 1; text-transform: uppercase; margin-top: 8px; }
+  .card .unit { margin-top: 6px; font-size: 12.5px; color: var(--mut); }
+  .card .foot { margin-top: auto; padding-top: 16px; display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; }
+  .card .price { font-family: "Anton", sans-serif; font-size: 19px; }
+  .card .price small { font-size: 11px; color: var(--mut); }
+  .add { display: inline-flex; align-items: center; gap: 6px; background: var(--accent); color: var(--ink); border: none; border-radius: 2px; padding: 9px 13px; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; transition: background .14s var(--ease), transform .14s var(--ease); }
+  .add:hover { background: var(--accentHover); } .add:active { transform: scale(0.95); } .add svg { width: 13px; height: 13px; }
+
+  .no-results { grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: var(--mut); }
+  .no-results h3 { font-family: "Anton", sans-serif; font-size: 26px; text-transform: uppercase; color: var(--fg); }
+  .no-results p { margin-top: 8px; font-size: 14px; }
+  .no-results button { margin-top: 18px; border: 1px solid var(--line); background: transparent; color: var(--fg); border-radius: 2px; padding: 11px 20px; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 600; }
+  .no-results button:hover { border-color: var(--accent); }
+
+  /* Modal */
+  .scrim { position: fixed; inset: 0; background: rgba(4,6,10,0.72); opacity: 0; visibility: hidden; transition: opacity .26s var(--ease), visibility .26s var(--ease); z-index: 60; }
+  .scrim.open { opacity: 1; visibility: visible; }
+  .modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -46%); width: 900px; max-width: 94vw; max-height: 90vh; overflow-y: auto; background: var(--bg2); border: 1px solid var(--line); border-radius: 4px; z-index: 70; opacity: 0; visibility: hidden; transition: opacity .24s var(--ease), transform .24s var(--ease), visibility .24s var(--ease); }
+  .modal.open { opacity: 1; visibility: visible; transform: translate(-50%, -50%); }
+  .modal .x { position: absolute; top: 14px; right: 14px; z-index: 2; width: 36px; height: 36px; border-radius: 2px; border: 1px solid var(--line); background: var(--bg); display: grid; place-items: center; color: var(--fg); }
+  .modal .x:hover { border-color: var(--accent); } .modal .x svg { width: 17px; height: 17px; }
+  .modal-grid { display: grid; grid-template-columns: 1fr 1fr; }
+  .modal-img { aspect-ratio: 1; background: var(--bg3); overflow: hidden; border-right: 1px solid var(--line); }
+  .modal-img img { width: 100%; height: 100%; object-fit: cover; filter: saturate(0.9) brightness(0.92); }
+  .modal-info { padding: 36px 32px; display: flex; flex-direction: column; }
+  .modal-info .topline { display: flex; justify-content: space-between; align-items: center; font-size: 11px; letter-spacing: 0.06em; color: var(--mut); }
+  .modal-info .topline .ist { color: var(--stock); text-transform: uppercase; }
+  .modal-info .brandt { margin-top: 22px; font-size: 11.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
+  .modal-info h2 { font-family: "Anton", sans-serif; font-size: 36px; line-height: 0.96; text-transform: uppercase; margin-top: 8px; }
+  .modal-info .mprice { margin-top: 18px; display: flex; align-items: baseline; gap: 10px; }
+  .modal-info .mprice .p { font-family: "Anton", sans-serif; font-size: 30px; }
+  .modal-info .mprice .u { font-size: 13px; color: var(--mut); }
+  .modal-info .desc { margin-top: 16px; font-size: 14.5px; color: var(--mut); line-height: 1.6; }
+  .specs { margin-top: 22px; }
+  .specs .shead { font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--mut); padding-bottom: 8px; border-bottom: 1px solid var(--accent); }
+  .specs .srow { display: flex; justify-content: space-between; gap: 16px; padding: 11px 0; border-bottom: 1px solid var(--line); font-size: 13.5px; }
+  .specs .srow .k { color: var(--mut); text-transform: uppercase; font-size: 12px; letter-spacing: 0.04em; }
+  .specs .srow .v { color: var(--fg); font-weight: 600; text-align: right; }
+  .modal-buy { margin-top: auto; padding-top: 26px; display: flex; gap: 12px; }
+  .modal-buy .stepper { display: inline-flex; align-items: center; border: 1px solid var(--line); border-radius: 2px; }
+  .modal-buy .stepper button { width: 42px; height: 48px; border: none; background: transparent; font-size: 18px; color: var(--fg); }
+  .modal-buy .stepper button:hover { color: var(--accent); }
+  .modal-buy .stepper span { min-width: 32px; text-align: center; font-weight: 700; }
+  .modal-buy .addbig { flex: 1; background: var(--accent); color: var(--ink); border: none; border-radius: 2px; font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+  .modal-buy .addbig:hover { background: var(--accentHover); }
+  @media (max-width: 720px) { .modal-grid { grid-template-columns: 1fr; } .modal-img { aspect-ratio: 16/10; border-right: none; border-bottom: 1px solid var(--line); } .modal-info { padding: 26px 22px; } }
+
+  /* Drawer */
+  .drawer { position: fixed; top: 0; right: 0; height: 100%; width: 410px; max-width: 92vw; background: var(--bg); border-left: 1px solid var(--line); z-index: 70; display: flex; flex-direction: column; transform: translateX(100%); transition: transform .3s var(--ease); }
+  .drawer.open { transform: translateX(0); }
+  .drawer-head { display: flex; align-items: center; justify-content: space-between; padding: 22px 22px 16px; border-bottom: 1px solid var(--line); }
+  .drawer-head h2 { font-family: "Anton", sans-serif; font-size: 24px; text-transform: uppercase; }
+  .drawer-head .x { width: 34px; height: 34px; border-radius: 2px; border: 1px solid var(--line); background: transparent; display: grid; place-items: center; color: var(--fg); }
+  .drawer-head .x:hover { border-color: var(--accent); } .drawer-head .x svg { width: 17px; height: 17px; }
+  .drawer-body { flex: 1; overflow-y: auto; padding: 6px 22px; }
+  .line { display: flex; gap: 13px; padding: 18px 0; border-bottom: 1px solid var(--line); }
+  .line .lt { width: 60px; height: 60px; border-radius: 2px; overflow: hidden; flex: none; border: 1px solid var(--line); }
+  .line .lt img { width: 100%; height: 100%; object-fit: cover; filter: saturate(0.9); }
+  .line .li { flex: 1; min-width: 0; }
+  .line .li .bt { font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+  .line .li h4 { font-family: "Anton", sans-serif; font-size: 16px; text-transform: uppercase; line-height: 1.05; margin-top: 3px; }
+  .line .li .lp { margin-top: 5px; font-size: 12.5px; color: var(--mut); }
+  .line .lr { display: flex; flex-direction: column; align-items: flex-end; justify-content: space-between; }
+  .stepper { display: inline-flex; align-items: center; border: 1px solid var(--line); border-radius: 2px; }
+  .stepper button { width: 28px; height: 28px; border: none; background: transparent; font-size: 15px; color: var(--fg); display: grid; place-items: center; }
+  .stepper button:hover { color: var(--accent); }
+  .stepper span { min-width: 26px; text-align: center; font-size: 13px; font-weight: 700; }
+  .remove { background: none; border: none; color: var(--mut); font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; padding: 2px; }
+  .remove:hover { color: var(--accent); }
+  .empty { text-align: center; padding: 64px 20px; color: var(--mut); }
+  .empty .ec { width: 54px; height: 54px; border-radius: 2px; border: 1px solid var(--line); display: grid; place-items: center; margin: 0 auto 16px; color: var(--mut); } .empty .ec svg { width: 24px; height: 24px; }
+  .empty h3 { font-family: "Anton", sans-serif; font-size: 22px; text-transform: uppercase; color: var(--fg); }
+  .empty p { margin-top: 6px; font-size: 13.5px; }
+  .drawer-foot { border-top: 1px solid var(--line); padding: 20px 22px calc(20px + env(safe-area-inset-bottom)); background: var(--bg2); }
+  .drawer-foot .row { display: flex; justify-content: space-between; font-size: 13px; color: var(--mut); margin-bottom: 9px; }
+  .drawer-foot .row.total { font-family: "Anton", sans-serif; font-size: 22px; color: var(--fg); text-transform: uppercase; margin: 8px 0 16px; }
+  .drawer-foot .checkout { width: 100%; background: var(--accent); color: var(--ink); border: none; border-radius: 2px; padding: 14px; font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+  .drawer-foot .checkout:hover { background: var(--accentHover); }
+  .drawer-foot .note { font-size: 10.5px; letter-spacing: 0.03em; color: var(--mut); margin-top: 12px; text-align: center; line-height: 1.5; }
+
+  .toast { position: fixed; left: 50%; bottom: 30px; transform: translate(-50%, 24px); background: var(--fg); color: var(--ink); padding: 12px 20px; border-radius: 2px; font-size: 12.5px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; display: flex; align-items: center; gap: 9px; z-index: 80; opacity: 0; pointer-events: none; transition: opacity .22s var(--ease), transform .22s var(--ease); }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+  .toast svg { width: 16px; height: 16px; color: var(--accent); }
+
+  @keyframes cardIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
+  .card.in { animation: cardIn .5s var(--ease) backwards; }
+  @keyframes badgePop { 0%{transform:scale(1)} 35%{transform:scale(1.4)} 100%{transform:scale(1)} }
+  .cart-count.bump { animation: badgePop .4s var(--ease); }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .marquee-track { animation: none; }
+    .card.in, .cart-count.bump { animation: none; }
+    .cursor { display: none; }
+    * { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor" aria-hidden="true"></div>
+
+<!-- NAV -->
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="norvik-kinetic-v2-blue.html">Norvik</a>
+    <nav class="nav-links">
+      <a href="norvik-kinetic-v2-blue.html">Home</a>
+      <a href="norvik-kinetic-v2-blue.html#capabilities">Capabilities</a>
+      <a href="norvik-kinetic-v2-blue.html#stats">Results</a>
+    </nav>
+    <button id="cartOpen" class="cart-btn" aria-label="Open order">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1.4"/><circle cx="18" cy="21" r="1.4"/><path d="M2 3h3l2.4 13.4a2 2 0 0 0 2 1.6h8.7a2 2 0 0 0 2-1.6L23 7H6"/></svg>
+      Order
+      <span id="cartCount" class="cart-count hide">0</span>
+    </button>
+  </div>
+</header>
+
+<!-- HEADER -->
+<section class="cat-head">
+  <div class="wrap">
+    <a class="back" href="norvik-kinetic-v2-blue.html">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+      Back to site
+    </a>
+    <h1 class="anton">Catalog</h1>
+    <p>Authorized stock at trade pricing, shown per unit. Build an order and request a quote, or check out on net terms once your account is approved.</p>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee" aria-label="Brands we distribute">
+  <div class="marquee-track">
+    <img src="https://cdn.simpleicons.org/3m/eef2fb" alt="3M" />
+    <img src="https://cdn.simpleicons.org/bosch/eef2fb" alt="Bosch" />
+    <img src="https://cdn.simpleicons.org/honeywell/eef2fb" alt="Honeywell" />
+    <img src="https://cdn.simpleicons.org/dewalt/eef2fb" alt="DeWalt" />
+    <img src="https://cdn.simpleicons.org/caterpillar/eef2fb" alt="Caterpillar" />
+    <img src="https://cdn.simpleicons.org/siemens/eef2fb" alt="Siemens" />
+    <img src="https://cdn.simpleicons.org/3m/eef2fb" alt="" aria-hidden="true" />
+    <img src="https://cdn.simpleicons.org/bosch/eef2fb" alt="" aria-hidden="true" />
+    <img src="https://cdn.simpleicons.org/honeywell/eef2fb" alt="" aria-hidden="true" />
+    <img src="https://cdn.simpleicons.org/dewalt/eef2fb" alt="" aria-hidden="true" />
+    <img src="https://cdn.simpleicons.org/caterpillar/eef2fb" alt="" aria-hidden="true" />
+    <img src="https://cdn.simpleicons.org/siemens/eef2fb" alt="" aria-hidden="true" />
+  </div>
+</div>
+
+<!-- CONTROL -->
+<div class="control">
+  <div class="wrap control-inner">
+    <div class="search">
+      <svg class="mag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <input id="search" type="search" placeholder="Search by product, brand, or SKU" autocomplete="off" />
+      <button class="clear" id="searchClear" aria-label="Clear search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+    </div>
+    <div class="filter-row" id="filterRow">
+      <button class="pill active" data-cat="all">All</button>
+      <button class="pill" data-cat="safety">Safety</button>
+      <button class="pill" data-cat="power">Power</button>
+      <button class="pill" data-cat="packaging">Packaging</button>
+      <button class="pill" data-cat="facility">Facility</button>
+      <button class="pill" data-cat="electrical">Electrical</button>
+      <button class="pill" data-cat="handling">Handling</button>
+    </div>
+  </div>
+</div>
+
+<!-- GRID -->
+<section class="grid-wrap">
+  <div class="wrap">
+    <p class="count-line"><strong id="resultCount">0</strong> lines in stock</p>
+    <div class="grid" id="grid"></div>
+  </div>
+</section>
+
+<!-- MODAL -->
+<div class="scrim" id="modalScrim"></div>
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="Product detail">
+  <button class="x" id="modalClose" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+  <div class="modal-grid" id="modalGrid"></div>
+</div>
+
+<!-- CART -->
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-label="Your order">
+  <div class="drawer-head">
+    <h2>Your Order</h2>
+    <button class="x" id="cartClose" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+  </div>
+  <div class="drawer-body" id="drawerBody"></div>
+  <div class="drawer-foot" id="drawerFoot" style="display:none;">
+    <div class="row"><span>Subtotal</span><span id="subTotal">$0.00</span></div>
+    <div class="row"><span>Tax &amp; freight</span><span>At quote</span></div>
+    <div class="row total"><span>Total</span><span id="orderTotal">$0.00</span></div>
+    <button class="checkout" id="checkout">Request a quote</button>
+    <p class="note">Net 30 terms subject to credit approval. Prices are sample data for demo.</p>
+  </div>
+</aside>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span id="toastText">Added to order</span></div>
+
+<script>
+const PRODUCTS = [
+  { id:"p1", sku:"MMM-9205-N95", brand:"3M", name:"Aura N95 Respirator", unit:"Box of 20", price:28.50, cat:"safety", seed:"norvik-respirator-n95" },
+  { id:"p2", sku:"DWT-20VXR-DRL", brand:"DeWalt", name:"20V XR Brushless Driver", unit:"Each", price:179.00, cat:"power", seed:"norvik-dewalt-drill" },
+  { id:"p3", sku:"HON-UVX-STL", brand:"Honeywell", name:"Uvex Stealth Goggles", unit:"Each", price:12.95, cat:"safety", seed:"norvik-safety-goggles" },
+  { id:"p4", sku:"BSH-18V-RSAW", brand:"Bosch", name:"18V Reciprocating Saw", unit:"Each", price:149.00, cat:"power", seed:"norvik-bosch-saw" },
+  { id:"p5", sku:"NVK-TAPE-2IN", brand:"Norvik", name:"Packing Tape 2in", unit:"Case of 36", price:42.00, cat:"packaging", seed:"norvik-packing-tape" },
+  { id:"p6", sku:"CAT-2NDSH-ST", brand:"Caterpillar", name:"Steel-Toe Boots", unit:"Per pair", price:124.95, cat:"safety", seed:"norvik-work-boots" },
+  { id:"p7", sku:"SIE-QP120-1P", brand:"Siemens", name:"QP 20A Breaker", unit:"Each", price:9.75, cat:"electrical", seed:"norvik-circuit-breaker" },
+  { id:"p8", sku:"NVK-WRAP-18", brand:"Norvik", name:"Stretch Wrap 18in", unit:"4-roll pack", price:36.50, cat:"packaging", seed:"norvik-stretch-wrap" },
+  { id:"p9", sku:"HON-NTRL-5ML", brand:"Honeywell", name:"Nitrile Gloves 5mil", unit:"Box of 100", price:14.40, cat:"facility", seed:"norvik-nitrile-gloves" },
+  { id:"p10", sku:"RBM-UTIL-2SH", brand:"Rubbermaid", name:"2-Shelf Utility Cart", unit:"Each", price:134.00, cat:"handling", seed:"norvik-utility-cart" },
+  { id:"p11", sku:"PHL-HB150-50", brand:"Philips", name:"LED High-Bay 150W", unit:"Each", price:89.00, cat:"electrical", seed:"norvik-highbay-light" },
+  { id:"p12", sku:"NVK-BOX-1212", brand:"Norvik", name:"Corrugated Boxes", unit:"Bundle of 25", price:31.25, cat:"packaging", seed:"norvik-shipping-boxes" }
+];
+const DETAILS = {
+  p1:{desc:"NIOSH-approved N95 with an embossed top panel that resists collapse in heat and humidity. Braided headbands hold a consistent seal across a full shift.",specs:[["Rating","N95 NIOSH"],["Pack","20 / box"],["Sizing","Universal"],["Lead time","Same day"]]},
+  p2:{desc:"Brushless 20V driver with a two-speed transmission and 15 clutch settings. Battery and charger sold separately or as a kit through your rep.",specs:[["Voltage","20V MAX"],["Chuck","1/2 in keyless"],["Torque","450 in-lb"],["Warranty","3 year"]]},
+  p3:{desc:"Sealed indirect-vent goggle with anti-fog coating. Fits over most prescription frames for line and lab work.",specs:[["Lens","Clear anti-fog"],["Vent","Indirect"],["Standard","ANSI Z87.1"],["Pack","Each"]]},
+  p4:{desc:"Compact 18V reciprocating saw with tool-free blade changes and a variable-speed trigger for demolition and trim cuts alike.",specs:[["Voltage","18V"],["Stroke","1-1/8 in"],["Speed","0-3050 spm"],["Warranty","3 year"]]},
+  p5:{desc:"High-tack hot-melt tape that holds in cold storage and dusty docks. Quiet release off the roll keeps lines moving.",specs:[["Width","2 in"],["Length","110 yd"],["Pack","36 / case"],["Adhesive","Hot melt"]]},
+  p6:{desc:"Steel-toe boot with a slip-resistant outsole and a cushioned insole rated for all-day concrete. Electrical-hazard certified.",specs:[["Toe","Steel"],["Rating","ASTM EH"],["Sizing","7-14"],["Sold","Per pair"]]},
+  p7:{desc:"Plug-on single-pole breaker for QP-compatible load centers. Thermal-magnetic trip for reliable branch protection.",specs:[["Amperage","20A"],["Poles","1"],["Type","QP plug-on"],["Pack","Each"]]},
+  p8:{desc:"Cast stretch film with a clingy inner layer and a quiet outer layer. Holds pallets square through transit without extra labor.",specs:[["Width","18 in"],["Length","1500 ft"],["Gauge","80 ga"],["Pack","4 rolls"]]},
+  p9:{desc:"Powder-free nitrile gloves with textured fingertips for grip on oily parts. Latex-free for sensitive crews.",specs:[["Thickness","5 mil"],["Material","Nitrile"],["Pack","100 / box"],["Sizing","S-XXL"]]},
+  p10:{desc:"Two-shelf utility cart with a 500 lb capacity and quiet non-marking casters. Molded lip keeps small parts from rolling off.",specs:[["Capacity","500 lb"],["Shelves","2"],["Casters","4 in"],["Sold","Each"]]},
+  p11:{desc:"150W LED high bay pushing 21,000 lumens at 5000K. Direct replacement for 400W metal halide with instant-on.",specs:[["Wattage","150W"],["Output","21,000 lm"],["Color","5000K"],["Warranty","5 year"]]},
+  p12:{desc:"32 ECT corrugated boxes that ship and store flat until needed. Consistent dimensions for automated taping and palletizing.",specs:[["Size","12x12x12 in"],["Strength","32 ECT"],["Pack","25 / bundle"],["Material","Kraft"]]}
+};
+
+const img = (s,w,h) => `https://picsum.photos/seed/${s}/${w}/${h}`;
+const fmt = (n) => "$" + n.toFixed(2);
+const eaUnit = (u) => (u.toLowerCase().startsWith("each")||u.toLowerCase().startsWith("per")) ? "ea" : "case";
+
+let activeCat="all", searchQuery="", cart={};
+try { cart = JSON.parse(localStorage.getItem("norvik-cart-kinetic")) || {}; } catch(e){ cart={}; }
+const save = () => { try { localStorage.setItem("norvik-cart-kinetic", JSON.stringify(cart)); } catch(e){} };
+const $ = (id) => document.getElementById(id);
+const byId = (id) => PRODUCTS.find(p => p.id === id);
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+function renderGrid() {
+  const q = searchQuery.trim().toLowerCase();
+  const list = PRODUCTS.filter(p => {
+    const catOk = activeCat==="all" || p.cat===activeCat;
+    const textOk = !q || (p.name+" "+p.brand+" "+p.sku).toLowerCase().includes(q);
+    return catOk && textOk;
+  });
+  $("resultCount").textContent = String(list.length).padStart(2,"0");
+  if (list.length === 0) {
+    $("grid").innerHTML = `<div class="no-results"><h3>No lines match</h3><p>Try a different term, or clear the filters to see the full catalog.</p><button id="resetFilters">Clear filters</button></div>`;
+    return;
+  }
+  $("grid").innerHTML = list.map((p,i) => `
+    <article data-id="${p.id}" class="card ${reduceMotion?'':'in'}" style="animation-delay:${Math.min(i,12)*45}ms;">
+      <div class="thumb">
+        <span class="stock"><span class="d"></span> In stock</span>
+        <img src="${img(p.seed,480,360)}" alt="${p.name}" loading="lazy" />
+      </div>
+      <div class="body">
+        <div class="brandt">${p.brand} <span class="sku">· ${p.sku}</span></div>
+        <h3>${p.name}</h3>
+        <div class="unit">${p.unit}</div>
+        <div class="foot">
+          <span class="price">${fmt(p.price)} <small>/${eaUnit(p.unit)}</small></span>
+          <button class="add" data-add="${p.id}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg> Add</button>
+        </div>
+      </div>
+    </article>`).join("");
+  bindCursorTargets();
+}
+
+function addToCart(id, qty){ qty=qty||1; cart[id]=(cart[id]||0)+qty; save(); updateCart(); showToast(byId(id).brand+" added to order"); }
+function setQty(id,q){ if(q<=0){delete cart[id];}else{cart[id]=q;} save(); updateCart(); }
+function cartCount(){ return Object.values(cart).reduce((a,b)=>a+b,0); }
+function cartSubtotal(){ return Object.entries(cart).reduce((s,[id,q])=>s+(byId(id)?byId(id).price*q:0),0); }
+
+let prevCount = cartCount();
+function updateCart(){
+  const count = cartCount(); const badge = $("cartCount");
+  badge.textContent = count; badge.classList.toggle("hide", count===0);
+  if (count > prevCount) { badge.classList.remove("bump"); void badge.offsetWidth; badge.classList.add("bump"); setTimeout(()=>badge.classList.remove("bump"),450); }
+  prevCount = count;
+  const entries = Object.entries(cart).filter(([id])=>byId(id));
+  if (entries.length === 0) {
+    $("drawerFoot").style.display = "none";
+    $("drawerBody").innerHTML = `<div class="empty"><div class="ec"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1.4"/><circle cx="18" cy="21" r="1.4"/><path d="M2 3h3l2.4 13.4a2 2 0 0 0 2 1.6h8.7a2 2 0 0 0 2-1.6L23 7H6"/></svg></div><h3>Order is empty</h3><p>Add stocked lines from the catalog to build an order.</p></div>`;
+    return;
+  }
+  $("drawerBody").innerHTML = entries.map(([id,q]) => {
+    const p = byId(id);
+    return `<div class="line">
+      <div class="lt"><img src="${img(p.seed,120,120)}" alt="${p.name}" /></div>
+      <div class="li"><div class="bt">${p.brand} / ${p.sku}</div><h4>${p.name}</h4><div class="lp">${fmt(p.price)} · ${p.unit}</div></div>
+      <div class="lr"><button class="remove" data-remove="${id}">Remove</button>
+        <div class="stepper"><button data-dec="${id}" aria-label="Decrease">&minus;</button><span>${q}</span><button data-inc="${id}" aria-label="Increase">+</button></div>
+      </div></div>`;
+  }).join("");
+  const sub = cartSubtotal();
+  $("subTotal").textContent = fmt(sub); $("orderTotal").textContent = fmt(sub);
+  $("drawerFoot").style.display = "block";
+}
+
+function openDrawer(){ $("scrim").classList.add("open"); $("drawer").classList.add("open"); document.body.classList.add("lock"); }
+function closeDrawer(){ $("scrim").classList.remove("open"); $("drawer").classList.remove("open"); if(!$("modal").classList.contains("open")) document.body.classList.remove("lock"); }
+
+let modalQty = 1;
+function openModal(id){
+  const p = byId(id); if(!p) return; const d = DETAILS[id] || {desc:"",specs:[]}; modalQty = 1;
+  $("modalGrid").innerHTML = `
+    <div class="modal-img"><img src="${img(p.seed,720,720)}" alt="${p.name}" /></div>
+    <div class="modal-info">
+      <div class="topline"><span>${p.sku}</span><span class="ist">In stock / ships same day</span></div>
+      <div class="brandt">${p.brand}</div>
+      <h2>${p.name}</h2>
+      <div class="mprice"><span class="p">${fmt(p.price)}</span><span class="u">/ ${p.unit}</span></div>
+      <p class="desc">${d.desc}</p>
+      <div class="specs"><div class="shead">Specifications</div>
+        ${d.specs.map(s=>`<div class="srow"><span class="k">${s[0]}</span><span class="v">${s[1]}</span></div>`).join("")}
+      </div>
+      <div class="modal-buy">
+        <div class="stepper"><button id="mDec" aria-label="Decrease">&minus;</button><span id="mQty">1</span><button id="mInc" aria-label="Increase">+</button></div>
+        <button class="addbig" data-modal-add="${id}">Add to order</button>
+      </div>
+    </div>`;
+  $("modalScrim").classList.add("open"); $("modal").classList.add("open"); document.body.classList.add("lock");
+  bindCursorTargets();
+}
+function closeModal(){ $("modalScrim").classList.remove("open"); $("modal").classList.remove("open"); if(!$("drawer").classList.contains("open")) document.body.classList.remove("lock"); }
+function setModalQty(q){ modalQty = Math.max(1,q); const el=$("mQty"); if(el) el.textContent = modalQty; }
+
+let toastTimer;
+function showToast(msg){ $("toastText").textContent = msg; $("toast").classList.add("show"); clearTimeout(toastTimer); toastTimer = setTimeout(()=>$("toast").classList.remove("show"), 1900); }
+
+document.addEventListener("click",(e)=>{
+  const add = e.target.closest("[data-add]"); if (add){ addToCart(add.dataset.add); return; }
+  const mAdd = e.target.closest("[data-modal-add]"); if (mAdd){ addToCart(mAdd.dataset.modalAdd, modalQty); closeModal(); return; }
+  if (e.target.closest("#mInc")){ setModalQty(modalQty+1); return; }
+  if (e.target.closest("#mDec")){ setModalQty(modalQty-1); return; }
+  const inc = e.target.closest("[data-inc]"); if (inc){ setQty(inc.dataset.inc,(cart[inc.dataset.inc]||0)+1); return; }
+  const dec = e.target.closest("[data-dec]"); if (dec){ setQty(dec.dataset.dec,(cart[dec.dataset.dec]||0)-1); return; }
+  const rem = e.target.closest("[data-remove]"); if (rem){ setQty(rem.dataset.remove,0); return; }
+  if (e.target.closest("#resetFilters")){ activeCat="all"; searchQuery=""; $("search").value=""; $("searchClear").classList.remove("show"); document.querySelectorAll(".pill").forEach(p=>p.classList.toggle("active",p.dataset.cat==="all")); renderGrid(); return; }
+  const pill = e.target.closest(".pill");
+  if (pill){ document.querySelectorAll(".pill").forEach(p=>p.classList.remove("active")); pill.classList.add("active"); activeCat = pill.dataset.cat; renderGrid(); return; }
+  const card = e.target.closest("[data-id]"); if (card && card.dataset.id){ openModal(card.dataset.id); }
+});
+
+$("search").addEventListener("input",(e)=>{ searchQuery = e.target.value; $("searchClear").classList.toggle("show", searchQuery.length>0); renderGrid(); });
+$("searchClear").addEventListener("click",()=>{ searchQuery=""; $("search").value=""; $("searchClear").classList.remove("show"); $("search").focus(); renderGrid(); });
+$("cartOpen").addEventListener("click", openDrawer);
+$("cartClose").addEventListener("click", closeDrawer);
+$("scrim").addEventListener("click", closeDrawer);
+$("modalClose").addEventListener("click", closeModal);
+$("modalScrim").addEventListener("click", closeModal);
+document.addEventListener("keydown",(e)=>{ if(e.key==="Escape"){ closeModal(); closeDrawer(); } });
+$("checkout").addEventListener("click",()=>{ showToast("Quote requested. A rep will follow up."); closeDrawer(); });
+
+// --- Cursor follower (fine pointers) ---
+let cursorHot = null;
+function bindCursorTargets(){
+  if (!cursorHot) return;
+  document.querySelectorAll("a, button, .card, .pill").forEach((el) => {
+    if (el.dataset.cbound) return; el.dataset.cbound = "1";
+    el.addEventListener("mouseenter", () => cursorHot(true));
+    el.addEventListener("mouseleave", () => cursorHot(false));
+  });
+}
+(function initCursor(){
+  if (reduceMotion || !window.matchMedia("(pointer: fine)").matches) return;
+  if (!window.gsap) return;
+  const cursor = $("cursor");
+  const cx = gsap.quickTo(cursor, "x", { duration: 0.4, ease: "power3" });
+  const cy = gsap.quickTo(cursor, "y", { duration: 0.4, ease: "power3" });
+  window.addEventListener("pointermove", (e) => { cursor.classList.add("on"); cx(e.clientX); cy(e.clientY); });
+  window.addEventListener("pointerleave", () => cursor.classList.remove("on"));
+  cursorHot = (on) => cursor.classList.toggle("hot", on);
+  bindCursorTargets();
+})();
+
+renderGrid();
+updateCart();
+</script>
+</body>
+</html>

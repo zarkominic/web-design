@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Norvik Supply Co. — Catalog</title>
+<meta name="description" content="Browse authorized stock: tools, safety, packaging, and facility supplies. Trade pricing, net terms, same-day shipping." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: { extend: {
+      colors: { ink:'#020617', navy:'#0F172A', steel:'#334155', brand:'#0369A1', brandHover:'#075985', surface:'#F8FAFC', stockok:'#047857' },
+      fontFamily: { display:['Lexend','ui-sans-serif','sans-serif'], body:['"Source Sans 3"','ui-sans-serif','sans-serif'] }
+    }}
+  };
+</script>
+<style>
+  body { font-family: "Source Sans 3", sans-serif; }
+  .font-display { font-family: "Lexend", sans-serif; }
+  html { scroll-behavior: smooth; }
+  body.lock { overflow: hidden; }
+  @keyframes plateIn { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+  .card-in { animation: plateIn .5s cubic-bezier(.16,1,.3,1) backwards; }
+  @keyframes badgePop { 0%{transform:scale(1)} 35%{transform:scale(1.4)} 100%{transform:scale(1)} }
+  .bump { animation: badgePop .4s cubic-bezier(.16,1,.3,1); }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .card-in, .bump { animation: none; }
+    * { transition: none !important; }
+  }
+</style>
+</head>
+<body class="bg-surface text-ink antialiased">
+
+<!-- ============ NAV ============ -->
+<header class="sticky top-0 z-40 bg-surface/85 backdrop-blur border-b border-slate-200">
+  <div class="max-w-7xl mx-auto px-6 h-[68px] flex items-center justify-between gap-4">
+    <a href="norvik-uipro.html" class="flex items-center gap-2.5">
+      <span class="w-7 h-7 rounded-md bg-navy grid place-items-center">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7l8-4 8 4v10l-8 4-8-4z"/><path d="M4 7l8 4 8-4M12 11v10"/></svg>
+      </span>
+      <span class="font-display font-700 text-[19px] tracking-tight text-navy">Norvik</span>
+    </a>
+    <nav class="hidden md:flex items-center gap-8 text-[15px] text-steel">
+      <a href="#catalog" class="hover:text-navy transition-colors">Catalog</a>
+      <a href="norvik-uipro.html#credentials" class="hover:text-navy transition-colors">Credentials</a>
+      <a href="norvik-uipro.html#capabilities" class="hover:text-navy transition-colors">Capabilities</a>
+    </nav>
+    <button id="cartOpen" class="relative inline-flex items-center gap-2 rounded-md border border-slate-300 hover:border-navy text-navy text-[15px] font-600 px-4 py-2 transition-colors cursor-pointer" aria-label="Open order">
+      <svg class="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1.4"/><circle cx="18" cy="21" r="1.4"/><path d="M2 3h3l2.4 13.4a2 2 0 0 0 2 1.6h8.7a2 2 0 0 0 2-1.6L23 7H6"/></svg>
+      Order
+      <span id="cartCount" class="hidden min-w-5 h-5 px-1.5 rounded-full bg-brand text-white text-[12px] font-700 grid place-items-center">0</span>
+    </button>
+  </div>
+</header>
+
+<!-- ============ CATALOG HEADER ============ -->
+<section id="catalog" class="max-w-7xl mx-auto px-6 pt-12 pb-6">
+  <div class="inline-flex items-center gap-2 rounded-full bg-brand/10 text-brand text-[13px] font-600 px-3 py-1.5">
+    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><path d="M12 3l8 4v5c0 4.5-3 7.5-8 9-5-1.5-8-4.5-8-9V7z"/></svg>
+    Authorized stock
+  </div>
+  <h1 class="font-display font-700 text-navy text-3xl md:text-[2.6rem] tracking-tight leading-tight mt-4 max-w-[18ch]">Trade pricing on the brands you specify.</h1>
+  <p class="mt-3 text-steel text-[16px] max-w-[58ch]">Prices shown per unit. Add items to an order and request a quote, or check out on net terms once your account is approved.</p>
+</section>
+
+<!-- ============ CONTROL BAR ============ -->
+<div class="sticky top-[68px] z-30 bg-surface/92 backdrop-blur border-b border-slate-200">
+  <div class="max-w-7xl mx-auto px-6 py-3.5 flex flex-col md:flex-row md:items-center gap-3 md:gap-5">
+    <div class="relative w-full md:max-w-sm">
+      <svg class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <input id="search" type="search" placeholder="Search by product, brand, or SKU" autocomplete="off"
+        class="w-full text-[15px] text-navy bg-white border border-slate-300 rounded-md pl-10 pr-9 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand transition" />
+      <button id="searchClear" class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 w-6 h-6 rounded-md text-slate-400 hover:text-navy place-items-center cursor-pointer" aria-label="Clear search">
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div id="filterRow" class="flex gap-2 overflow-x-auto md:ml-auto" style="scrollbar-width:none;">
+      <button class="pill active flex-none text-[13.5px] font-600 rounded-md px-3.5 py-2 cursor-pointer transition-colors" data-cat="all">All</button>
+      <button class="pill flex-none text-[13.5px] font-600 rounded-md px-3.5 py-2 cursor-pointer transition-colors" data-cat="safety">Safety</button>
+      <button class="pill flex-none text-[13.5px] font-600 rounded-md px-3.5 py-2 cursor-pointer transition-colors" data-cat="power">Power</button>
+      <button class="pill flex-none text-[13.5px] font-600 rounded-md px-3.5 py-2 cursor-pointer transition-colors" data-cat="packaging">Packaging</button>
+      <button class="pill flex-none text-[13.5px] font-600 rounded-md px-3.5 py-2 cursor-pointer transition-colors" data-cat="facility">Facility</button>
+      <button class="pill flex-none text-[13.5px] font-600 rounded-md px-3.5 py-2 cursor-pointer transition-colors" data-cat="electrical">Electrical</button>
+      <button class="pill flex-none text-[13.5px] font-600 rounded-md px-3.5 py-2 cursor-pointer transition-colors" data-cat="handling">Handling</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ GRID ============ -->
+<section class="max-w-7xl mx-auto px-6 pt-7 pb-24">
+  <p class="text-[14px] text-slate-500 mb-5"><strong id="resultCount" class="text-navy font-600">0</strong> products in stock</p>
+  <div id="grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5"></div>
+</section>
+
+<!-- ============ MODAL ============ -->
+<div id="modalScrim" class="fixed inset-0 bg-slate-900/50 opacity-0 invisible transition-all duration-300 z-50"></div>
+<div id="modal" role="dialog" aria-modal="true" aria-label="Product detail"
+  class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-[46%] opacity-0 invisible w-[900px] max-w-[94vw] max-h-[90vh] overflow-y-auto bg-white rounded-xl border border-slate-200 shadow-2xl z-[60] transition-all duration-300">
+  <button id="modalClose" class="absolute top-4 right-4 z-10 w-9 h-9 rounded-md border border-slate-200 bg-white grid place-items-center text-navy hover:border-navy cursor-pointer" aria-label="Close">
+    <svg class="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+  </button>
+  <div id="modalGrid" class="grid md:grid-cols-2"></div>
+</div>
+
+<!-- ============ CART ============ -->
+<div id="scrim" class="fixed inset-0 bg-slate-900/50 opacity-0 invisible transition-all duration-300 z-50"></div>
+<aside id="drawer" class="fixed top-0 right-0 h-full w-[408px] max-w-[92vw] bg-surface border-l border-slate-200 z-[60] flex flex-col translate-x-full transition-transform duration-300" aria-label="Your order">
+  <div class="flex items-center justify-between px-6 pt-6 pb-4 border-b border-slate-200">
+    <h2 class="font-display font-700 text-navy text-xl">Your order</h2>
+    <button id="cartClose" class="w-9 h-9 rounded-md border border-slate-200 grid place-items-center text-navy hover:border-navy cursor-pointer" aria-label="Close">
+      <svg class="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <div id="drawerBody" class="flex-1 overflow-y-auto px-6"></div>
+  <div id="drawerFoot" class="hidden border-t border-slate-200 px-6 pt-5 pb-6 bg-white">
+    <div class="flex justify-between text-[14px] text-steel mb-2"><span>Subtotal</span><span id="subTotal">$0.00</span></div>
+    <div class="flex justify-between text-[14px] text-steel mb-2"><span>Tax &amp; freight</span><span>At quote</span></div>
+    <div class="flex justify-between font-display font-700 text-navy text-lg mt-2 mb-4"><span>Total</span><span id="orderTotal">$0.00</span></div>
+    <button id="checkout" class="w-full rounded-md bg-brand hover:bg-brandHover text-white font-600 py-3.5 transition-colors cursor-pointer">Request a quote</button>
+    <p class="text-[12px] text-slate-400 mt-3 text-center leading-relaxed">Net 30 terms subject to credit approval.<br>Prices are sample data for demo.</p>
+  </div>
+</aside>
+
+<!-- ============ TOAST ============ -->
+<div id="toast" class="fixed left-1/2 bottom-7 -translate-x-1/2 translate-y-6 opacity-0 pointer-events-none bg-navy text-white px-5 py-3 rounded-md text-[14px] font-600 flex items-center gap-2.5 z-[70] transition-all duration-200">
+  <svg class="w-4 h-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+  <span id="toastText">Added to order</span>
+</div>
+
+<style>
+  .pill { border: 1px solid #cbd5e1; background:#fff; color:#334155; }
+  .pill:hover { border-color:#94a3b8; color:#0F172A; }
+  .pill.active { background:#0F172A; color:#fff; border-color:#0F172A; }
+</style>
+
+<script>
+const PRODUCTS = [
+  { id:"p1", sku:"MMM-9205-N95", brand:"3M", name:"Aura N95 Respirator 9205+", unit:"Box of 20", price:28.50, cat:"safety", seed:"norvik-respirator-n95" },
+  { id:"p2", sku:"DWT-20VXR-DRL", brand:"DeWalt", name:"20V MAX XR Brushless Driver", unit:"Each", price:179.00, cat:"power", seed:"norvik-dewalt-drill" },
+  { id:"p3", sku:"HON-UVX-STL", brand:"Honeywell", name:"Uvex Stealth Safety Goggles", unit:"Each", price:12.95, cat:"safety", seed:"norvik-safety-goggles" },
+  { id:"p4", sku:"BSH-18V-RSAW", brand:"Bosch", name:"18V Reciprocating Saw", unit:"Each", price:149.00, cat:"power", seed:"norvik-bosch-saw" },
+  { id:"p5", sku:"NVK-TAPE-2IN", brand:"Norvik", name:"Heavy-Duty Packing Tape", unit:"Case of 36", price:42.00, cat:"packaging", seed:"norvik-packing-tape" },
+  { id:"p6", sku:"CAT-2NDSH-ST", brand:"Caterpillar", name:"Second Shift Steel-Toe Boots", unit:"Per pair", price:124.95, cat:"safety", seed:"norvik-work-boots" },
+  { id:"p7", sku:"SIE-QP120-1P", brand:"Siemens", name:"QP 20A Circuit Breaker", unit:"Each", price:9.75, cat:"electrical", seed:"norvik-circuit-breaker" },
+  { id:"p8", sku:"NVK-WRAP-18", brand:"Norvik", name:"Stretch Wrap Film 18in", unit:"4-roll pack", price:36.50, cat:"packaging", seed:"norvik-stretch-wrap" },
+  { id:"p9", sku:"HON-NTRL-5ML", brand:"Honeywell", name:"Nitrile Gloves 5 mil", unit:"Box of 100", price:14.40, cat:"facility", seed:"norvik-nitrile-gloves" },
+  { id:"p10", sku:"RBM-UTIL-2SH", brand:"Rubbermaid", name:"2-Shelf Utility Cart", unit:"Each", price:134.00, cat:"handling", seed:"norvik-utility-cart" },
+  { id:"p11", sku:"PHL-HB150-50", brand:"Philips", name:"LED High-Bay 150W 5000K", unit:"Each", price:89.00, cat:"electrical", seed:"norvik-highbay-light" },
+  { id:"p12", sku:"NVK-BOX-1212", brand:"Norvik", name:"Corrugated Boxes 12x12x12", unit:"Bundle of 25", price:31.25, cat:"packaging", seed:"norvik-shipping-boxes" }
+];
+const DETAILS = {
+  p1:{desc:"NIOSH-approved N95 with an embossed top panel that resists collapse in heat and humidity. Braided headbands hold a consistent seal across a full shift.",specs:[["Rating","N95 NIOSH"],["Pack","20 / box"],["Sizing","Universal"],["Lead time","Same day"]]},
+  p2:{desc:"Brushless 20V driver with a two-speed transmission and 15 clutch settings. Battery and charger sold separately or as a kit through your rep.",specs:[["Voltage","20V MAX"],["Chuck","1/2 in keyless"],["Torque","450 in-lb"],["Warranty","3 year"]]},
+  p3:{desc:"Sealed indirect-vent goggle with anti-fog coating. Fits over most prescription frames for line and lab work.",specs:[["Lens","Clear anti-fog"],["Vent","Indirect"],["Standard","ANSI Z87.1"],["Pack","Each"]]},
+  p4:{desc:"Compact 18V reciprocating saw with tool-free blade changes and a variable-speed trigger for demolition and trim cuts alike.",specs:[["Voltage","18V"],["Stroke","1-1/8 in"],["Speed","0-3050 spm"],["Warranty","3 year"]]},
+  p5:{desc:"High-tack hot-melt tape that holds in cold storage and dusty docks. Quiet release off the roll keeps lines moving.",specs:[["Width","2 in"],["Length","110 yd"],["Pack","36 / case"],["Adhesive","Hot melt"]]},
+  p6:{desc:"Steel-toe boot with a slip-resistant outsole and a cushioned insole rated for all-day concrete. Electrical-hazard certified.",specs:[["Toe","Steel"],["Rating","ASTM EH"],["Sizing","7-14"],["Sold","Per pair"]]},
+  p7:{desc:"Plug-on single-pole breaker for QP-compatible load centers. Thermal-magnetic trip for reliable branch protection.",specs:[["Amperage","20A"],["Poles","1"],["Type","QP plug-on"],["Pack","Each"]]},
+  p8:{desc:"Cast stretch film with a clingy inner layer and a quiet outer layer. Holds pallets square through transit without extra labor.",specs:[["Width","18 in"],["Length","1500 ft"],["Gauge","80 ga"],["Pack","4 rolls"]]},
+  p9:{desc:"Powder-free nitrile gloves with textured fingertips for grip on oily parts. Latex-free for sensitive crews.",specs:[["Thickness","5 mil"],["Material","Nitrile"],["Pack","100 / box"],["Sizing","S-XXL"]]},
+  p10:{desc:"Two-shelf utility cart with a 500 lb capacity and quiet non-marking casters. Molded lip keeps small parts from rolling off.",specs:[["Capacity","500 lb"],["Shelves","2"],["Casters","4 in"],["Sold","Each"]]},
+  p11:{desc:"150W LED high bay pushing 21,000 lumens at 5000K. Direct replacement for 400W metal halide with instant-on.",specs:[["Wattage","150W"],["Output","21,000 lm"],["Color","5000K"],["Warranty","5 year"]]},
+  p12:{desc:"32 ECT corrugated boxes that ship and store flat until needed. Consistent dimensions for automated taping and palletizing.",specs:[["Size","12x12x12 in"],["Strength","32 ECT"],["Pack","25 / bundle"],["Material","Kraft"]]}
+};
+
+const img = (s,w,h) => `https://picsum.photos/seed/${s}/${w}/${h}`;
+const fmt = (n) => "$" + n.toFixed(2);
+const eaUnit = (u) => (u.toLowerCase().startsWith("each")||u.toLowerCase().startsWith("per")) ? "ea" : "case";
+
+let activeCat="all", searchQuery="", cart={};
+try { cart = JSON.parse(localStorage.getItem("norvik-cart-uipro")) || {}; } catch(e){ cart={}; }
+const save = () => { try { localStorage.setItem("norvik-cart-uipro", JSON.stringify(cart)); } catch(e){} };
+const $ = (id) => document.getElementById(id);
+const byId = (id) => PRODUCTS.find(p => p.id === id);
+
+function renderGrid() {
+  const q = searchQuery.trim().toLowerCase();
+  const list = PRODUCTS.filter(p => {
+    const catOk = activeCat==="all" || p.cat===activeCat;
+    const textOk = !q || (p.name+" "+p.brand+" "+p.sku).toLowerCase().includes(q);
+    return catOk && textOk;
+  });
+  $("resultCount").textContent = list.length;
+  if (list.length === 0) {
+    $("grid").innerHTML = `<div class="col-span-full text-center py-16 text-steel">
+      <h3 class="font-display font-600 text-navy text-xl">No products match your search</h3>
+      <p class="mt-2 text-[14px]">Try a different term, or clear the filters to see the full catalog.</p>
+      <button id="resetFilters" class="mt-5 inline-flex rounded-md border border-slate-300 hover:border-navy text-navy font-600 px-5 py-2.5 cursor-pointer transition-colors">Clear filters</button>
+    </div>`;
+    return;
+  }
+  $("grid").innerHTML = list.map((p,i) => `
+    <article data-id="${p.id}" class="card-in group bg-white border border-slate-200 rounded-xl overflow-hidden flex flex-col cursor-pointer hover:border-brand hover:shadow-[0_18px_40px_-26px_rgba(15,23,42,0.4)] transition-all" style="animation-delay:${Math.min(i,12)*45}ms;">
+      <div class="relative aspect-[4/3] bg-slate-100 overflow-hidden">
+        <span class="absolute top-2.5 left-2.5 inline-flex items-center gap-1.5 bg-white/95 border border-slate-200 rounded-full px-2.5 py-1 text-[11px] font-600 text-stockok">
+          <span class="w-1.5 h-1.5 rounded-full bg-stockok"></span> In stock
+        </span>
+        <img src="${img(p.seed,480,360)}" alt="${p.name}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+      </div>
+      <div class="p-4 flex flex-col flex-1">
+        <div class="text-[11px] font-600 tracking-wide uppercase text-slate-400">${p.brand} <span class="text-slate-300">·</span> <span class="text-slate-400 normal-case tracking-normal">${p.sku}</span></div>
+        <h3 class="font-display font-600 text-navy text-[15.5px] leading-snug mt-1.5">${p.name}</h3>
+        <div class="text-[13px] text-steel mt-1">${p.unit}</div>
+        <div class="mt-auto pt-4 flex items-end justify-between gap-2">
+          <span class="font-display font-700 text-navy text-[18px]">${fmt(p.price)} <span class="text-[12px] text-slate-400 font-400">/${eaUnit(p.unit)}</span></span>
+          <button data-add="${p.id}" class="inline-flex items-center gap-1.5 bg-brand hover:bg-brandHover text-white rounded-md px-3.5 py-2 text-[13px] font-600 cursor-pointer transition-colors">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+            Add
+          </button>
+        </div>
+      </div>
+    </article>`).join("");
+}
+
+function addToCart(id, qty){ qty=qty||1; cart[id]=(cart[id]||0)+qty; save(); updateCart(); showToast(byId(id).brand+" added to order"); }
+function setQty(id,q){ if(q<=0){delete cart[id];}else{cart[id]=q;} save(); updateCart(); }
+function cartCount(){ return Object.values(cart).reduce((a,b)=>a+b,0); }
+function cartSubtotal(){ return Object.entries(cart).reduce((s,[id,q])=>s+(byId(id)?byId(id).price*q:0),0); }
+
+let prevCount = cartCount();
+function updateCart(){
+  const count = cartCount();
+  const badge = $("cartCount");
+  badge.textContent = count;
+  badge.classList.toggle("hidden", count===0);
+  if (count > prevCount) { badge.classList.remove("bump"); void badge.offsetWidth; badge.classList.add("bump"); setTimeout(()=>badge.classList.remove("bump"),450); }
+  prevCount = count;
+
+  const entries = Object.entries(cart).filter(([id])=>byId(id));
+  if (entries.length === 0) {
+    $("drawerFoot").classList.add("hidden");
+    $("drawerBody").innerHTML = `<div class="text-center py-16 text-steel">
+      <div class="w-14 h-14 rounded-full border border-slate-200 grid place-items-center mx-auto mb-4 text-slate-400">
+        <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1.4"/><circle cx="18" cy="21" r="1.4"/><path d="M2 3h3l2.4 13.4a2 2 0 0 0 2 1.6h8.7a2 2 0 0 0 2-1.6L23 7H6"/></svg>
+      </div>
+      <h3 class="font-display font-600 text-navy text-lg">Your order is empty</h3>
+      <p class="mt-1.5 text-[14px]">Add stocked items from the catalog to build an order.</p>
+    </div>`;
+    return;
+  }
+  $("drawerBody").innerHTML = entries.map(([id,q]) => {
+    const p = byId(id);
+    return `<div class="flex gap-3.5 py-4 border-b border-slate-200">
+      <div class="w-16 h-16 rounded-md overflow-hidden border border-slate-200 flex-none"><img src="${img(p.seed,120,120)}" alt="${p.name}" class="w-full h-full object-cover" /></div>
+      <div class="flex-1 min-w-0">
+        <div class="text-[10.5px] font-600 uppercase tracking-wide text-slate-400">${p.brand}</div>
+        <h4 class="font-display font-600 text-navy text-[14px] leading-snug mt-0.5">${p.name}</h4>
+        <div class="text-[13px] text-steel mt-1">${fmt(p.price)} · ${p.unit}</div>
+      </div>
+      <div class="flex flex-col items-end justify-between">
+        <button data-remove="${id}" class="text-[12px] font-600 text-slate-400 hover:text-brand cursor-pointer">Remove</button>
+        <div class="inline-flex items-center border border-slate-300 rounded-md bg-white">
+          <button data-dec="${id}" class="w-7 h-7 grid place-items-center text-navy hover:bg-slate-50 cursor-pointer" aria-label="Decrease">&minus;</button>
+          <span class="min-w-7 text-center text-[14px] font-600 text-navy">${q}</span>
+          <button data-inc="${id}" class="w-7 h-7 grid place-items-center text-navy hover:bg-slate-50 cursor-pointer" aria-label="Increase">+</button>
+        </div>
+      </div>
+    </div>`;
+  }).join("");
+  const sub = cartSubtotal();
+  $("subTotal").textContent = fmt(sub);
+  $("orderTotal").textContent = fmt(sub);
+  $("drawerFoot").classList.remove("hidden");
+}
+
+function show(el){ el.classList.remove("opacity-0","invisible"); }
+function hide(el){ el.classList.add("opacity-0","invisible"); }
+function openDrawer(){ show($("scrim")); $("drawer").classList.remove("translate-x-full"); document.body.classList.add("lock"); }
+function closeDrawer(){ hide($("scrim")); $("drawer").classList.add("translate-x-full"); if(!$("modal").classList.contains("opacity-100")) document.body.classList.remove("lock"); }
+
+let modalQty = 1;
+function openModal(id){
+  const p = byId(id); if(!p) return;
+  const d = DETAILS[id] || {desc:"",specs:[]};
+  modalQty = 1;
+  $("modalGrid").innerHTML = `
+    <div class="aspect-square bg-slate-100 overflow-hidden md:rounded-l-xl"><img src="${img(p.seed,720,720)}" alt="${p.name}" class="w-full h-full object-cover" /></div>
+    <div class="p-8 flex flex-col">
+      <div class="flex items-center justify-between text-[12px] text-slate-400">
+        <span class="font-600">${p.sku}</span>
+        <span class="inline-flex items-center gap-1.5 text-stockok font-600"><span class="w-1.5 h-1.5 rounded-full bg-stockok"></span> In stock, ships same day</span>
+      </div>
+      <div class="text-[11.5px] font-600 uppercase tracking-wide text-slate-400 mt-5">${p.brand}</div>
+      <h2 class="font-display font-700 text-navy text-2xl leading-tight mt-1.5">${p.name}</h2>
+      <div class="flex items-baseline gap-2.5 mt-4">
+        <span class="font-display font-700 text-navy text-[26px]">${fmt(p.price)}</span>
+        <span class="text-[13px] text-steel">/ ${p.unit}</span>
+      </div>
+      <p class="mt-4 text-[14.5px] text-steel leading-relaxed">${d.desc}</p>
+      <div class="mt-5">
+        <div class="text-[11px] uppercase tracking-wider text-slate-400 pb-2 border-b-2 border-brand">Specifications</div>
+        ${d.specs.map(s=>`<div class="flex justify-between py-2.5 border-b border-slate-200 text-[13.5px]"><span class="text-steel">${s[0]}</span><span class="text-navy font-600">${s[1]}</span></div>`).join("")}
+      </div>
+      <div class="mt-auto pt-7 flex items-stretch gap-3">
+        <div class="inline-flex items-center border border-slate-300 rounded-md">
+          <button id="mDec" class="w-10 grid place-items-center text-navy text-lg hover:bg-slate-50 cursor-pointer" aria-label="Decrease">&minus;</button>
+          <span id="mQty" class="min-w-8 text-center font-600 text-navy">1</span>
+          <button id="mInc" class="w-10 grid place-items-center text-navy text-lg hover:bg-slate-50 cursor-pointer" aria-label="Increase">+</button>
+        </div>
+        <button data-modal-add="${id}" class="flex-1 rounded-md bg-brand hover:bg-brandHover text-white font-600 py-3 cursor-pointer transition-colors">Add to order</button>
+      </div>
+    </div>`;
+  show($("modalScrim"));
+  $("modal").classList.remove("opacity-0","invisible","-translate-y-[46%]");
+  $("modal").classList.add("opacity-100","-translate-y-1/2");
+  document.body.classList.add("lock");
+}
+function closeModal(){
+  hide($("modalScrim"));
+  $("modal").classList.add("opacity-0","invisible","-translate-y-[46%]");
+  $("modal").classList.remove("opacity-100","-translate-y-1/2");
+  if(!$("drawer").classList.contains("translate-x-full")) {} else { document.body.classList.remove("lock"); }
+}
+function setModalQty(q){ modalQty = Math.max(1,q); const el=$("mQty"); if(el) el.textContent = modalQty; }
+
+let toastTimer;
+function showToast(msg){
+  $("toastText").textContent = msg;
+  $("toast").classList.remove("opacity-0","translate-y-6");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>$("toast").classList.add("opacity-0","translate-y-6"), 1900);
+}
+
+document.addEventListener("click",(e)=>{
+  const add = e.target.closest("[data-add]");
+  if (add){ addToCart(add.dataset.add); return; }
+  const mAdd = e.target.closest("[data-modal-add]");
+  if (mAdd){ addToCart(mAdd.dataset.modalAdd, modalQty); closeModal(); return; }
+  if (e.target.closest("#mInc")){ setModalQty(modalQty+1); return; }
+  if (e.target.closest("#mDec")){ setModalQty(modalQty-1); return; }
+  const inc = e.target.closest("[data-inc]");
+  if (inc){ setQty(inc.dataset.inc,(cart[inc.dataset.inc]||0)+1); return; }
+  const dec = e.target.closest("[data-dec]");
+  if (dec){ setQty(dec.dataset.dec,(cart[dec.dataset.dec]||0)-1); return; }
+  const rem = e.target.closest("[data-remove]");
+  if (rem){ setQty(rem.dataset.remove,0); return; }
+  if (e.target.closest("#resetFilters")){
+    activeCat="all"; searchQuery=""; $("search").value=""; $("searchClear").classList.add("hidden");
+    document.querySelectorAll(".pill").forEach(p=>p.classList.toggle("active", p.dataset.cat==="all"));
+    renderGrid(); return;
+  }
+  const pill = e.target.closest(".pill");
+  if (pill){
+    document.querySelectorAll(".pill").forEach(p=>p.classList.remove("active"));
+    pill.classList.add("active");
+    activeCat = pill.dataset.cat; renderGrid(); return;
+  }
+  const card = e.target.closest("[data-id]");
+  if (card && card.dataset.id){ openModal(card.dataset.id); }
+});
+
+$("search").addEventListener("input",(e)=>{
+  searchQuery = e.target.value;
+  $("searchClear").classList.toggle("hidden", searchQuery.length===0);
+  $("searchClear").classList.toggle("grid", searchQuery.length>0);
+  renderGrid();
+});
+$("searchClear").addEventListener("click",()=>{
+  searchQuery=""; $("search").value=""; $("searchClear").classList.add("hidden"); $("searchClear").classList.remove("grid");
+  $("search").focus(); renderGrid();
+});
+
+$("cartOpen").addEventListener("click", openDrawer);
+$("cartClose").addEventListener("click", closeDrawer);
+$("scrim").addEventListener("click", closeDrawer);
+$("modalClose").addEventListener("click", closeModal);
+$("modalScrim").addEventListener("click", closeModal);
+document.addEventListener("keydown",(e)=>{ if(e.key==="Escape"){ closeModal(); closeDrawer(); } });
+$("checkout").addEventListener("click",()=>{ showToast("Quote requested. A rep will follow up."); closeDrawer(); });
+
+renderGrid();
+updateCart();
+</script>
+</body>
+</html>

@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Norvik Supply Co. — One supplier for the brands you trust</title>
+<meta name="description" content="Norvik distributes tools, safety, and facility supplies from 600+ manufacturers, with trade pricing, net terms, and a real account team." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<!-- Demo: fonts via Google Fonts CDN. In production, self-host with @font-face + font-display:swap. -->
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  /* ---- Tokens: one accent (orange), one radius scale, one light theme ---- */
+  :root {
+    --bg: #f6f6f4;
+    --bg-tint: #ecedea;
+    --surface: #ffffff;
+    --ink: #16181d;
+    --ink-soft: #555a63;
+    --ink-faint: #8b909a;
+    --line: #e0e1dd;
+    --accent: #d44b1c;       /* signal orange, fills + icons */
+    --accent-ink: #b23c16;   /* darker orange for text (WCAG AA on light) */
+    --charcoal: #14161b;     /* dark CTA buttons + footer */
+    --r-sm: 6px;
+    --r-md: 12px;
+    --r-pill: 999px;
+    --maxw: 1180px;
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: "Manrope", system-ui, sans-serif;
+    background: var(--bg); color: var(--ink); line-height: 1.5;
+    -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+  }
+  .mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
+  a { color: inherit; text-decoration: none; }
+  img { display: block; max-width: 100%; }
+
+  /* ---- Buttons (one radius, contrast verified) ---- */
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px; white-space: nowrap;
+    font-size: 15px; font-weight: 600; border-radius: var(--r-pill); padding: 11px 20px;
+    border: 1px solid transparent; cursor: pointer;
+    transition: transform .18s var(--ease), background .18s var(--ease), border-color .18s var(--ease), color .18s var(--ease);
+  }
+  .btn:active { transform: translateY(1px) scale(0.99); }
+  .btn-primary { background: var(--charcoal); color: #fff; }        /* dark = AA contrast */
+  .btn-primary:hover { background: #000; }
+  .btn-ghost { background: transparent; color: var(--ink); border-color: #c9cac4; }
+  .btn-ghost:hover { border-color: var(--ink); }
+  .btn-lg { padding: 14px 26px; font-size: 16px; }
+  .arrow { transition: transform .18s var(--ease); }
+  .btn:hover .arrow { transform: translateX(3px); }
+
+  /* ---- Nav (single line, <= 72px) ---- */
+  header.nav {
+    position: sticky; top: 0; z-index: 50;
+    background: color-mix(in srgb, var(--bg) 84%, transparent);
+    backdrop-filter: saturate(150%) blur(12px); border-bottom: 1px solid var(--line);
+  }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 68px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 19px; letter-spacing: -0.02em; }
+  .brand .mark { width: 26px; height: 26px; border-radius: var(--r-sm); background: var(--accent); display: grid; place-items: center; }
+  .brand .mark svg { width: 15px; height: 15px; }
+  .nav-links { display: flex; align-items: center; gap: 28px; font-size: 15px; font-weight: 500; color: var(--ink-soft); }
+  .nav-links a:hover { color: var(--ink); }
+  .nav-cta { display: flex; align-items: center; gap: 12px; }
+  @media (max-width: 880px) { .nav-links { display: none; } }
+
+  /* ---- Hero (asymmetric split) ---- */
+  .hero { padding: 72px 0 60px; }
+  .hero-grid { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 56px; align-items: center; }
+  .eyebrow { font-family: "JetBrains Mono", monospace; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent-ink); margin-bottom: 18px; }
+  h1 { font-size: clamp(2.4rem, 5vw, 3.6rem); line-height: 1.05; letter-spacing: -0.035em; font-weight: 800; max-width: 15ch; }
+  .hero p.sub { margin-top: 20px; font-size: 18px; color: var(--ink-soft); max-width: 48ch; }
+  .hero-cta { margin-top: 30px; display: flex; gap: 12px; flex-wrap: wrap; }
+  .hero-trust { margin-top: 22px; font-size: 13.5px; color: var(--ink-faint); }
+  .hero-art { position: relative; border-radius: var(--r-md); overflow: hidden; border: 1px solid var(--line); box-shadow: 0 24px 60px -30px rgba(20,22,28,0.5); aspect-ratio: 5/4; background: var(--bg-tint); }
+  .hero-art img { width: 100%; height: 100%; object-fit: cover; }
+  .hero-art .badge { position: absolute; left: 14px; bottom: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-pill); padding: 8px 14px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+  .hero-art .badge .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+  @media (max-width: 880px) { .hero-grid { grid-template-columns: 1fr; gap: 36px; } h1, .hero p.sub { max-width: 100%; } }
+
+  /* ---- Brands wall (real third-party logos = core content) ---- */
+  .brands { padding: 14px 0 56px; }
+  .brands .label { text-align: center; font-size: 13px; color: var(--ink-faint); letter-spacing: 0.04em; }
+  .brand-row { margin-top: 24px; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 48px; }
+  .brand-row img { height: 26px; opacity: 0.6; filter: grayscale(1); transition: opacity .2s var(--ease), filter .2s var(--ease); }
+  .brand-row img:hover { opacity: 1; filter: none; }
+
+  /* ---- Sections ---- */
+  section { padding: 80px 0; }
+  .section-head h2 { font-size: clamp(1.9rem, 3.4vw, 2.6rem); letter-spacing: -0.03em; font-weight: 800; line-height: 1.1; max-width: 22ch; }
+  .section-head p { margin-top: 14px; font-size: 17px; color: var(--ink-soft); max-width: 52ch; }
+
+  /* ---- Capabilities (bento, varied) ---- */
+  .bento { margin-top: 44px; display: grid; grid-template-columns: repeat(3, 1fr); grid-auto-rows: 1fr; gap: 16px; }
+  .cell { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-md); padding: 26px; display: flex; flex-direction: column; transition: transform .25s var(--ease), box-shadow .25s var(--ease); }
+  .cell:hover { transform: translateY(-3px); box-shadow: 0 18px 40px -26px rgba(20,22,28,0.4); }
+  .cell .ico { width: 40px; height: 40px; border-radius: 10px; background: var(--bg-tint); display: grid; place-items: center; margin-bottom: 16px; color: var(--accent-ink); }
+  .cell .ico svg { width: 21px; height: 21px; }
+  .cell h3 { font-size: 19px; font-weight: 700; letter-spacing: -0.015em; }
+  .cell p { margin-top: 8px; font-size: 15px; color: var(--ink-soft); }
+  .cell-feature { grid-column: span 2; grid-row: span 2; padding: 0; overflow: hidden; background: linear-gradient(155deg, #b23c16, var(--accent)); color: #fff; border: none; }
+  .cell-feature .pad { padding: 30px; }
+  .cell-feature h3 { color: #fff; font-size: 24px; }
+  .cell-feature p { color: rgba(255,255,255,0.85); max-width: 32ch; }
+  .cell-feature .integrations { margin-top: 22px; display: flex; gap: 8px; flex-wrap: wrap; }
+  .cell-feature .integrations span { font-family: "JetBrains Mono", monospace; font-size: 12px; background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.22); border-radius: var(--r-sm); padding: 6px 11px; }
+  @media (max-width: 880px) { .bento { grid-template-columns: 1fr; } .cell-feature { grid-column: span 1; grid-row: auto; } }
+
+  /* ---- Categories (image card grid, distinct family) ---- */
+  .cats { background: var(--bg-tint); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .cat-grid { margin-top: 40px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .cat { position: relative; border-radius: var(--r-md); overflow: hidden; border: 1px solid var(--line); aspect-ratio: 4/3; background: #ddd; }
+  .cat img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s var(--ease); }
+  .cat:hover img { transform: scale(1.05); }
+  .cat .scrim { position: absolute; inset: 0; background: linear-gradient(to top, rgba(20,22,27,0.78), rgba(20,22,27,0.05) 55%); }
+  .cat .meta { position: absolute; left: 18px; bottom: 16px; color: #fff; }
+  .cat .meta h4 { font-size: 18px; font-weight: 700; }
+  .cat .meta span { font-size: 13px; color: rgba(255,255,255,0.78); }
+  @media (max-width: 880px) { .cat-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 560px) { .cat-grid { grid-template-columns: 1fr; } }
+
+  /* ---- Stat band (plain, no cards) ---- */
+  .stats .wrap { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px; }
+  .stat .n { font-size: clamp(2.2rem, 4.5vw, 3.1rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1; }
+  .stat .n span { color: var(--accent-ink); }
+  .stat .t { margin-top: 10px; font-size: 14.5px; color: var(--ink-soft); max-width: 22ch; }
+  @media (max-width: 720px) { .stats .wrap { grid-template-columns: 1fr 1fr; gap: 32px; } }
+
+  /* ---- Deep dive (single split) ---- */
+  .dive .wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
+  .dive-art { border-radius: var(--r-md); overflow: hidden; border: 1px solid var(--line); aspect-ratio: 4/3; }
+  .dive-art img { width: 100%; height: 100%; object-fit: cover; }
+  .dive ul { margin-top: 22px; display: grid; gap: 14px; }
+  .dive li { display: flex; gap: 12px; font-size: 16px; color: var(--ink-soft); }
+  .dive li svg { flex: none; width: 20px; height: 20px; color: var(--accent); margin-top: 2px; }
+  @media (max-width: 880px) { .dive .wrap { grid-template-columns: 1fr; gap: 32px; } }
+
+  /* ---- Quote ---- */
+  .quote { text-align: center; }
+  .quote blockquote { font-size: clamp(1.5rem, 3.2vw, 2.2rem); letter-spacing: -0.02em; line-height: 1.3; font-weight: 600; max-width: 24ch; margin: 0 auto; }
+  .quote .who { margin-top: 26px; font-size: 15px; color: var(--ink-soft); }
+  .quote .who strong { color: var(--ink); font-weight: 700; }
+
+  /* ---- Final CTA ---- */
+  .cta-final { text-align: center; }
+  .cta-final h2 { font-size: clamp(2rem, 4vw, 2.9rem); letter-spacing: -0.03em; font-weight: 800; max-width: 18ch; margin: 0 auto; }
+  .cta-final p { margin-top: 14px; color: var(--ink-soft); font-size: 17px; }
+  .cta-final .row { margin-top: 28px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+  /* ---- Footer (dark) ---- */
+  footer { background: var(--charcoal); color: #c4c8d1; }
+  footer .wrap { padding-top: 58px; padding-bottom: 40px; }
+  .foot-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 40px; }
+  footer .brand { color: #fff; }
+  footer p.tag { margin-top: 14px; font-size: 14px; color: #888d97; max-width: 32ch; }
+  .foot-col h4 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; color: #71767f; margin-bottom: 14px; }
+  .foot-col a { display: block; font-size: 14px; color: #c4c8d1; padding: 5px 0; }
+  .foot-col a:hover { color: #fff; }
+  .foot-base { margin-top: 44px; padding-top: 22px; border-top: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; font-size: 13px; color: #71767f; flex-wrap: wrap; gap: 10px; }
+  @media (max-width: 760px) { .foot-grid { grid-template-columns: 1fr 1fr; gap: 30px; } }
+
+  /* ---- Reveal ---- */
+  .reveal { opacity: 0; transform: translateY(20px); transition: opacity .65s var(--ease), transform .65s var(--ease); }
+  .reveal.in { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .reveal { opacity: 1; transform: none; transition: none; }
+    .btn, .cell, .cat img, .brand-row img { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="#top">
+      <span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7l8-4 8 4v10l-8 4-8-4z"/><path d="M4 7l8 4 8-4M12 11v10"/></svg></span>
+      Norvik
+    </a>
+    <nav class="nav-links">
+      <a href="#categories">Products</a>
+      <a href="#capabilities">Industries</a>
+      <a href="#metrics">Pricing</a>
+      <a href="#account">Resources</a>
+    </nav>
+    <div class="nav-cta">
+      <a class="btn btn-ghost" href="#" style="padding:9px 16px;">Sign in</a>
+      <a class="btn btn-primary" href="#cta" style="padding:9px 18px;">Get a quote</a>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ============ HERO ============ -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <p class="eyebrow">B2B distribution</p>
+        <h1>One supplier for the brands you already trust.</h1>
+        <p class="sub">Norvik stocks tools, safety, and facility supplies from 600 manufacturers, with trade pricing, net terms, and a real account team.</p>
+        <div class="hero-cta">
+          <a class="btn btn-primary btn-lg" href="#cta">Get a quote <span class="arrow">&rarr;</span></a>
+          <a class="btn btn-ghost btn-lg" href="#categories">Browse catalog</a>
+        </div>
+        <p class="hero-trust">Net 30 terms available. Same-day shipping on stocked items before 4pm.</p>
+      </div>
+      <div class="hero-art">
+        <!-- TODO: replace with a real warehouse / catalog photo, 1200x960. Placeholder is editorial photography. -->
+        <img src="https://picsum.photos/seed/norvik-warehouse-supply/1200/960" alt="Distribution warehouse aisles" />
+        <span class="badge"><span class="dot"></span> 85,000 SKUs in stock</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ BRANDS WALL ============ -->
+  <section class="brands" style="padding-top:0;">
+    <div class="wrap">
+      <p class="label">Brands we carry</p>
+      <div class="brand-row">
+        <img src="https://cdn.simpleicons.org/3m/16181d" alt="3M" />
+        <img src="https://cdn.simpleicons.org/bosch/16181d" alt="Bosch" />
+        <img src="https://cdn.simpleicons.org/honeywell/16181d" alt="Honeywell" />
+        <img src="https://cdn.simpleicons.org/dewalt/16181d" alt="DeWalt" />
+        <img src="https://cdn.simpleicons.org/caterpillar/16181d" alt="Caterpillar" />
+        <img src="https://cdn.simpleicons.org/siemens/16181d" alt="Siemens" />
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CAPABILITIES (bento) ============ -->
+  <section id="capabilities">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <h2>Built for the way procurement actually buys.</h2>
+        <p>Consolidate scattered vendors into one account, one invoice, and one place to track every order.</p>
+      </div>
+      <div class="bento">
+        <div class="cell cell-feature reveal">
+          <div class="pad">
+            <h3>Connects to your procurement stack</h3>
+            <p>Punchout catalogs and electronic POs work with the systems your finance team already runs.</p>
+            <div class="integrations">
+              <span>Coupa</span><span>SAP Ariba</span><span>Jaggaer</span><span>Oracle</span>
+            </div>
+          </div>
+        </div>
+        <div class="cell reveal">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20"/><circle cx="12" cy="12" r="9"/></svg></div>
+          <h3>Contract & volume pricing</h3>
+          <p>Negotiated rates that hold across every order, not just the first one.</p>
+        </div>
+        <div class="cell reveal">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="14" height="10" rx="1.5"/><path d="M16 10h3l3 3v4h-6z"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg></div>
+          <h3>Same-day fulfillment</h3>
+          <p>Six regional warehouses keep stocked items moving the day you order.</p>
+        </div>
+        <div class="cell reveal" style="grid-column: span 2;">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg></div>
+          <h3>Net 30 terms and one monthly invoice</h3>
+          <p>Approved accounts buy on terms and reconcile against a single statement, instead of chasing a dozen vendor bills.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CATEGORIES (image card grid) ============ -->
+  <section id="categories" class="cats">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">Catalog</p>
+        <h2>Everything your sites run on.</h2>
+      </div>
+      <div class="cat-grid">
+        <a class="cat reveal" href="#"><img src="https://picsum.photos/seed/norvik-safety-ppe/600/450" alt="Safety and PPE" /><div class="scrim"></div><div class="meta"><h4>Safety & PPE</h4><span>Gloves, eyewear, respirators, hi-vis</span></div></a>
+        <a class="cat reveal" href="#"><img src="https://picsum.photos/seed/norvik-power-tools/600/450" alt="Power and hand tools" /><div class="scrim"></div><div class="meta"><h4>Power & hand tools</h4><span>Drills, saws, fasteners, bits</span></div></a>
+        <a class="cat reveal" href="#"><img src="https://picsum.photos/seed/norvik-packaging-ship/600/450" alt="Packaging and shipping" /><div class="scrim"></div><div class="meta"><h4>Packaging & shipping</h4><span>Boxes, tape, stretch wrap, mailers</span></div></a>
+        <a class="cat reveal" href="#"><img src="https://picsum.photos/seed/norvik-facility-jan/600/450" alt="Facility and janitorial" /><div class="scrim"></div><div class="meta"><h4>Facility & janitorial</h4><span>Cleaning, paper, waste, matting</span></div></a>
+        <a class="cat reveal" href="#"><img src="https://picsum.photos/seed/norvik-electrical-light/600/450" alt="Electrical and lighting" /><div class="scrim"></div><div class="meta"><h4>Electrical & lighting</h4><span>Wire, conduit, fixtures, controls</span></div></a>
+        <a class="cat reveal" href="#"><img src="https://picsum.photos/seed/norvik-material-handling/600/450" alt="Material handling" /><div class="scrim"></div><div class="meta"><h4>Material handling</h4><span>Carts, shelving, lifts, bins</span></div></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ STAT BAND ============ -->
+  <section id="metrics" class="stats">
+    <div class="wrap">
+      <!-- sample figures, illustrative only -->
+      <div class="stat reveal"><div class="n mono"><span>600</span></div><div class="t">Manufacturers in one catalog.</div></div>
+      <div class="stat reveal"><div class="n mono"><span>85k</span></div><div class="t">SKUs stocked across six warehouses.</div></div>
+      <div class="stat reveal"><div class="n mono"><span>4pm</span></div><div class="t">Same-day ship cutoff on stocked items.</div></div>
+      <div class="stat reveal"><div class="n mono"><span>1</span></div><div class="t">Invoice, instead of a dozen vendor bills.</div></div>
+    </div>
+  </section>
+
+  <!-- ============ DEEP DIVE (single split) ============ -->
+  <section id="account" class="dive">
+    <div class="wrap">
+      <div class="reveal">
+        <h2 style="font-size:clamp(1.9rem,3.4vw,2.6rem);letter-spacing:-0.03em;font-weight:800;line-height:1.1;">Your account team, not a ticket queue.</h2>
+        <p style="margin-top:14px;color:var(--ink-soft);font-size:17px;max-width:48ch;">Every trade account gets a named rep who knows your sites, your standing orders, and the brands you specify. Reach them directly when a job cannot wait.</p>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span>Quotes on bulk and non-stock items, usually same business day.</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span>Standing orders and scheduled replenishment for recurring needs.</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span>Returns and warranty claims handled on your behalf with the manufacturer.</span></li>
+        </ul>
+        <div style="margin-top:28px;"><a class="btn btn-primary btn-lg" href="#cta">Talk to an account rep <span class="arrow">&rarr;</span></a></div>
+      </div>
+      <div class="dive-art reveal">
+        <img src="https://picsum.photos/seed/norvik-account-team/900/676" alt="Account representative reviewing an order" />
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ QUOTE ============ -->
+  <section class="quote">
+    <div class="wrap">
+      <blockquote class="reveal">"We cut twelve vendors down to one account and a single invoice. Our buyers got their week back."</blockquote>
+      <p class="who reveal"><strong>Marcus Feld</strong>, Procurement Lead at Cedarbrook Manufacturing</p>
+    </div>
+  </section>
+
+  <!-- ============ FINAL CTA ============ -->
+  <section id="cta" class="cta-final">
+    <div class="wrap">
+      <h2 class="reveal">Open a trade account in a day.</h2>
+      <p class="reveal">Tell us what you buy and where it ships. We will set up pricing, terms, and an account rep before your next order.</p>
+      <div class="row reveal">
+        <a class="btn btn-primary btn-lg" href="#">Get a quote <span class="arrow">&rarr;</span></a>
+        <a class="btn btn-ghost btn-lg" href="#categories">Browse catalog</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <a class="brand" href="#top">
+          <span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7l8-4 8 4v10l-8 4-8-4z"/><path d="M4 7l8 4 8-4M12 11v10"/></svg></span>
+          Norvik
+        </a>
+        <p class="tag">A B2B distributor of tools, safety, and facility supplies from the manufacturers you already specify.</p>
+      </div>
+      <div class="foot-col">
+        <h4>Products</h4>
+        <a href="#categories">Safety & PPE</a>
+        <a href="#categories">Power tools</a>
+        <a href="#categories">Packaging</a>
+        <a href="#categories">Facility supply</a>
+      </div>
+      <div class="foot-col">
+        <h4>Company</h4>
+        <a href="#">About</a>
+        <a href="#">Brands</a>
+        <a href="#">Warehouses</a>
+        <a href="#">Careers</a>
+      </div>
+      <div class="foot-col">
+        <h4>Support</h4>
+        <a href="#cta">Open an account</a>
+        <a href="#">Order status</a>
+        <a href="#">Returns</a>
+        <a href="#">Contact</a>
+      </div>
+    </div>
+    <div class="foot-base">
+      <span>© 2026 Norvik Supply Co.</span>
+      <span>Privacy · Terms · Net 30 terms subject to credit approval</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var els = document.querySelectorAll(".reveal");
+    if (reduce || !("IntersectionObserver" in window)) { els.forEach(function (el) { el.classList.add("in"); }); return; }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
+    }, { threshold: 0.14 });
+    els.forEach(function (el) { io.observe(el); });
+  })();
+</script>
+</body>
+</html>
