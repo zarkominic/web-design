@@ -20,6 +20,9 @@ Standalone HTML design demos built around a fictional B2B distributor, **Norvik 
 - [norvik-kinetic-v2-blue.html](norvik-kinetic-v2-blue.html) — v2 recolored electric blue, with per-panel background color driven by the horizontal pan
 - [norvik-kinetic-catalog.html](norvik-kinetic-catalog.html) — kinetic catalog, linked to/from the blue landing
 
+### React project
+- [jack-3d-portfolio/](jack-3d-portfolio/) — "Jack — 3D Creator" portfolio. Vite + React + TypeScript + Tailwind + Framer Motion. Run with `npm install && npm run dev`.
+
 ## Notes
 - Catalog pages include live search, category filters, product detail modal, and a cart persisted in `localStorage`.
 - All pages respect `prefers-reduced-motion` and target WCAG AA contrast.
